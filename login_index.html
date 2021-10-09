@@ -1,0 +1,73 @@
+<html>
+  <meta charset="utf-8">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="lib/bulma/bulma.min.css">
+
+    <link rel="stylesheet" type="text/css" href="lib/fontawesome/css/all.min.css">
+
+    <link rel="stylesheet" href="css/estilos_login.css" />
+
+    <script src="lib/jQuery/jquery-3.6.0.min.js"></script><!--cambiar-->
+
+    <script src="js/login.js" type="text/javascript" ></script><!--cambiar-->
+    <link rel="stylesheet" href="css/animate.min.css"/>
+    <link rel="shortcut icon" href="img/favicon.ico">
+  </head>
+
+  <body>
+    <img class="wave" src="img/wave.png">
+
+    <div class="formulario_login">
+        <div class="field field_login animate__animated">
+          <center><i class="fas fa-kiwi-bird"></i><label class="label">Bienvenido!</label></center>
+            <div class="control has-icons-left has-icons-right " >
+              <input class="input is-primary " name="email" type="text" placeholder="Correo" >
+              <span class="icon is-small is-left">
+                <i class="fas fa-at"></i>
+              </span>
+              <span class="icon is-small is-right ">
+                <i class="fas fa-check avs"></i>
+                <i class="fas fa-times avs"></i>
+              </span>
+            </div>
+            <p class="help correo_avs avs"></p>
+          </div>
+
+          <div class="field animate__animated">
+            <div class="control has-icons-left has-icons-right ">
+              <input class="input is-primary " name="password" type="password" placeholder="Contraseña">
+              <span class="icon is-small is-left">
+                <i class="fas fa-unlock-alt"></i>
+              </span>
+              <span class="icon is-small is-right avs pass_inv">
+                <i class="fas fa-times"></i>
+              </span>
+            </div>
+            <p class="help avs is-danger pass_inv">Contraseña invalida</p>
+          </div>
+          <button  class="button is-warning is-rounded entrar">Entrar</button>
+          
+    </div>
+
+    <div class="inf_logo">
+      <center class="cent_inf_logo">
+        <label class="label superior_label">
+          <i class="fas fa-kiwi-bird"></i>  Kren
+        </label>
+
+        <label class="label"> 
+          <img id="device_img" src="img/device.png">
+
+        </label>
+     
+        <label class="label">
+          <img id="raspberry_logo" src="img/raspberry.png">Raspberry Pi
+        </label>
+
+      
+    </center>
+    </div>
+  </body>
+</html>

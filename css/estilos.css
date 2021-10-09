@@ -1,0 +1,671 @@
+   html{
+      background:  #c6c6c9 url('../img/background.png');
+      height: 100vh;
+      width: 100vw;
+      min-width: 31vh;
+
+    }
+
+    .cerrar_sesion{
+      float: right !important; 
+      margin-right: 1% !important;
+      color:  white;
+    }
+
+
+    .fa-power-off{
+      color:#3dd6af !important;
+    }
+
+    #imgEspera {
+      max-width: 7%;
+    }
+    body{
+      background: 0;
+      height: 100%;
+      width: 100%;
+      
+    }
+    .rounded-pill:hover{
+      background-color: white;
+      color: black;
+      cursor: pointer;
+    }
+
+    form{
+        width: 29vw;
+        margin-left: 20%;
+    }
+    
+   
+    @media only screen and (max-width : 1130px)
+    {
+      form{
+        margin-top: 1.5vh;
+        
+        }
+        
+    }
+    .fas{
+      cursor: pointer;
+    }
+    
+    .u_permitidos{
+      width: 25%;
+      margin-right: 4%;
+    }
+    .usu_permitidos{
+      margin-top: 1.5%;
+    }
+
+    .fecha_form{
+      width: 50%;
+
+    }
+    .des_form { 
+      box-shadow: inset 0 0.0625em 0.125em rgb(10 10 10 / 5%);
+      padding: calc(.75em - 1px);
+      border-radius: 4px;
+      border-color: #00d1b2;
+      color: #363636;
+      width: 100%;
+      overflow-y: scroll;
+      resize: none;
+      float: left;
+    }
+    main .fa-kiwi-bird{
+      margin-top: 8%;
+      color: #3DD6AF;
+    }
+    #form-agregar-curso .input, #form-agregar-empleado .input{
+      background-color: #d9d9d9;
+      font-size: 71%;
+    }
+     #form-agregar-curso span, #form-agregar-empleado span{
+      color: white;
+     }
+    #form-agregar-curso textarea, #form-agregar-empleado textarea{
+      background-color: #d9d9d9;
+    }
+    #form-agregar-curso .btn, #form-agregar-empleado .btn{
+       width: 45%;
+       margin-top: 2%;
+       margin: 2%;
+    }
+
+  
+    
+  
+ 
+  #curso-detalle #info{
+        overflow-y: scroll;
+    height: 10vh;
+  }
+  #ponente{
+    float: right;
+    color: #ffc107;
+  }
+   
+  .modal-content{
+    margin-top: 38vh;
+  }
+  .modal-content{
+    text-align: center;
+  }
+
+  #form-agregar-curso form, #form-agregar-empleado form{
+    background-color: #6e7275a8;
+    border-radius: 2%;
+    padding: 2%;
+    /*animation-name: fadein;
+    transition: all 10s;*/
+  }
+  #cabecera-tit-i{
+    float: left;
+  }
+  #cabecera-tit-d{
+    float: right;
+  }
+
+  footer{
+
+        padding: 1%;
+        display: flow-root;
+        color: white;
+        background-color: #12171b;
+        height: 6%;
+        width: 90%;
+        border-radius: 71px;
+        margin-left: .5%;
+        margin-top: 42.5%;
+  }
+  button.navbar-toggler{
+    font-size: 100%;
+  }
+
+  #cont-i, #cont-d{
+    min-height: 43vw;
+  }
+  ol.list-group{
+    min-height: 22.5vw;
+  }
+  div#curso-detalle{
+    min-height: 11vw;
+  }
+  #info{
+    min-height: 5vw;
+  }
+
+  #agregar-curso{
+   min-height: 24vw;
+  }
+ 
+  #actividad-actual{
+    min-height: 14vw;
+  }
+  #tit-actividad-actual{
+    min-height: 2vw;
+  }
+  #label-actividad-act{
+    min-height: 8vw;
+  }
+  form{
+    min-height: 25vw;
+  }
+  .selector_opc{
+    text-align: center;
+  }
+  .selector_opc span{
+    background-color: #2f323c;
+    border-radius: 9px;
+    padding: 1%;
+    margin-top: 10vw;
+    display: inline-block;
+    width: 38%;
+    border: 2px solid transparent;
+  }
+  .backcolor:hover{
+    animation-name: cambio_background;
+    animation-duration: 0.5s ;
+    animation-fill-mode: forwards;
+    animation-iteration-count: ;
+    cursor: pointer;
+
+  }
+  @keyframes cambio_background{
+      100%{background-color: transparent; border: 2px solid aquamarine; color: aquamarine;}
+  }
+
+  #span-der-form{
+    float: right;
+  }
+
+  .span-numero-telefono{
+    width: 100%;
+    margin-top: 2%;
+  }
+  .span-numero-telefono input{
+    width: 50%;
+    float: right;
+  }
+     
+
+  .fa-plus:hover, .fab:hover{
+    color: aquamarine;
+    cursor: pointer;
+  }
+  .button-vincular{
+    margin: 0% !important;
+    width: 100% !important;
+    margin-top: 2% !important;
+  }
+
+  .barra-busqueda{
+    display: inline-block;
+    border-radius: 18px;
+  }
+
+  .but-barra-busqueda{
+    border-radius: 18px !important;
+  }
+
+
+ 
+
+  
+
+   
+
+
+
+
+  
+ 
+
+  /*////////////////////fin estilos generales/////////////////*/
+
+
+
+@media only screen and (min-width : 881px)/*901 hacia arriba*/
+    {
+      #agregar-curso{
+        height: 37.7vh;
+      }
+    }
+
+
+@media only screen and (min-width : 1200px)/*901 hacia arriba*/
+    {
+      #agregar-curso{
+        height: 40vh;
+      }
+    }
+
+@media only screen and (min-width : 1400px)/*901 hacia arriba*/
+    {
+      #agregar-curso{
+        height: 43vh;
+      }
+    }
+
+    
+ @media only screen and (min-device-width : 901px)/*901 hacia arriba*/
+      {
+       
+          #cont-d div{
+              background-color: #6e7275a8; 
+          }
+        
+
+
+          #cont-i{
+            float: left;
+            font-size: 1.1vw;
+            padding: 1.5%;
+            width: 50%;
+          }
+
+          #cont-d{
+            display: inline-block;
+            float:right;
+            width: 49%;
+            font-size: 1.1vw;
+            padding: 1.5%;
+          }
+
+          #agregar-curso{
+              border-radius: 4px;
+              color: #d5d8d7;
+              margin-bottom: 6.3%;
+              
+          }
+
+         
+
+
+          
+          #actividad-actual{
+            margin-top: 5.8vh;
+            
+            border-radius: 4px;
+            color: #d5d8d7;
+            font-size: 1.2vw;
+            color:#ffbe00;
+            height: 25vh;
+          }
+
+
+          #tit-actividad-actual{
+            color: #3DD6AF;
+          }
+          
+          #botones-detalle button{
+            font-size: 98%;
+          }
+          
+          #label-actividad-act{
+            overflow-y:scroll ;
+            height: 16vh;
+            height: 8vw;
+          }
+
+         
+
+          .list-group{
+           overflow-y:scroll;
+           height: 40vh;
+          }
+
+           .list-group li{
+           background-color: #fafcff70;
+          }
+
+
+          .rounded-pill {
+            background-color: #3DD6AF;
+            color: black;
+          }
+
+          #curso-detalle{
+            background-color: #6e7275a8; 
+            border-radius: 4px;
+            color: #d5d8d7;
+            padding: 2%;
+            padding-bottom: 3vh;
+            margin-top: 2.3vw;
+          }
+
+          #botones-detalle{
+            float:right;
+            margin-top: 1%;
+          }
+          
+          #titulo-detalle{
+            color:#3DD6AF;
+          }
+         
+
+        /*news*/
+          #logo-raspberry{
+              width: 2vh;
+            }
+          
+
+       
+      }
+      /*///////////////////////////////////////////////////////////////////////////////////////////*/
+   
+     @media only screen and (max-width : 900px)/*900 hacia abajo*/
+    {
+      main {
+          font-size: 2vh;
+      }
+
+    }
+    
+   /*abajo de 900*/
+   @media only screen and (max-device-width : 900px)/*900 hacia abajo*/
+    {
+      .panel-barra-busqueda *{
+        font-size: 2vh !important;
+      }
+      form {
+        width: 98%;
+        margin-left: 0;
+      }
+      #form-agregar-empleado > button, #form-agregar-curso > button{
+        font-size: 2vh;
+      }
+
+      .selector_opc span{
+        width: 44%;
+        font-size: 1.27vh;
+        margin-top: 4%;
+      }
+
+       .title.is-4{
+        font-size: 2.1vh;
+       }
+       .modal button{
+        font-size: 1.6vh;
+       }
+
+     .logo-name{
+        font-size: 3vh;
+      }
+      
+      main {
+        font-size: 2vh;
+        min-width: 50vh;
+      }
+      
+      #cont-d
+      {
+        width: 100%;
+        padding-left: 2vh;
+         padding-right: 2vh;
+      }
+      #cont-d div{
+        background-color: #6e7275a8; 
+        border-radius: 11px;
+      }
+
+      #cont-i{
+        padding: 4%;
+        width: 100%;
+      }
+
+     
+      
+      #agregar-curso{
+        font-size: 2vh;
+        height: auto;
+        padding: 1vh;
+        color: #fff
+        
+      }
+
+      
+      #actividad-actual{
+        margin-top: 3vh;
+        height: 18vh;
+        font-size: 1.5vh;
+      }
+
+      #tit-actividad-actual{
+        color: #3DD6AF;
+        z-index: 2;
+      }
+
+       #label-actividad-act{
+          overflow-y:scroll ;
+          height: 16vh;
+          height: 18vw;
+       }
+      
+      .list-group{
+        font-size: 3vh;
+        overflow: scroll;
+        height: 39vh;
+        border-radius: 36px
+      }
+
+      .list-group li{
+        background-color: #fafcff70;
+      }
+
+      #curso-detalle{
+        background-color: #6e7275a8; 
+        border-radius: 14px;
+        padding: 2%;
+        margin-top: 3vh;
+        color: #fff;
+        font-size: 210%;
+        padding-bottom: 2vh;
+      }
+      
+      #botones-detalle{
+        display: block;
+       width: 100%;
+       text-align: center;
+      }
+
+     #botones-detalle button{
+      margin-top: 11px;
+      font-size: 2vh;
+      width: 48%;
+     }
+      
+
+
+      .text-foot{
+        color: #fff;
+      }
+
+      #contenido{
+        margin-top: -3vw;
+      }
+      
+      .rounded-pill{
+        background-color: #3dd6af;
+      }
+      .rounded-pill i{
+       color: black;
+      }
+      #logo-raspberry{
+        width: 2vh;
+      }
+      footer{
+        font-size: 234%;
+        margin-top: 2%;
+        padding: 2%;
+      }
+      
+
+
+}
+@media only screen and (min-width : 710px) and (max-width : 880px)
+  {
+    #curso-detalle
+    {
+      height: 21vh;
+    }
+   
+  }
+
+
+@media only screen and (max-width : 710px)
+{
+  
+    
+    #botones-detalle:{
+      
+        text-align: center;
+      width: 100%;
+    }
+    #botones-detalle button{
+      width: 45%;
+    }
+    .det_curso{
+      text-align: center;
+      display: flow-root;
+    }
+    
+
+}
+      
+
+@media only screen and (max-width : 897px)/* 897 hacia abajo*/
+   { 
+      form {
+        width: 98%;
+        margin-left: 0;
+      }
+       #cont-d
+      {
+        width: 100%;
+        padding-left: 2vh;
+         padding-right: 2vh;
+      }
+      #cont-d div{
+        background-color: #6e7275a8; 
+        border-radius: 11px;
+      }
+
+
+      main {
+        min-width: 50vh;
+      }
+      #cont-i{
+        padding: 4%;
+        width: 100%;
+      }
+
+     
+      
+      #agregar-curso{
+        font-size: 2vh;
+        height: auto;
+        padding: 1vh;
+        color: #fff
+      }
+      
+      .selector_opc span{
+        margin-top: 5vw;
+      }
+     
+
+      #actividad-actual{
+        margin-top: 3vh;
+        height: 16vh;
+        font-size: 1.5vh;
+      }
+
+      #tit-actividad-actual{
+        color: #3DD6AF;
+        z-index: 2;
+      }
+
+       #label-actividad-act{
+          overflow-y:scroll ;
+          height: 16vh;
+          height: 18vw;
+       }
+      
+      .list-group{
+        font-size: 3vh;
+        overflow-y: scroll;
+        height: 39vh;
+        border-radius: 36px
+      }
+
+      .list-group li{
+        background-color: #fafcff70;
+      }
+
+      #curso-detalle{
+        background-color: #6e7275a8; 
+        border-radius: 14px;
+        padding: 2%;
+        margin-top: 3vh;
+        color: #fff;
+        font-size: 1.8vh;
+        padding-bottom: 2vh;
+        height: 24vh;
+      }
+      
+      #botones-detalle{
+       float: right;
+       width: 100%;
+      }
+
+     #botones-detalle button{
+      font-size: 1.5vh;
+    height: 5%;
+    width: 48%;
+     }
+      
+
+      
+
+      .text-foot{
+        color: #fff;
+      }
+
+      #contenido{
+        min-width: 49vh;
+        margin-top: -3vw;
+      }
+      
+      .rounded-pill{
+        background-color: #3dd6af;
+      }
+      .rounded-pill i{
+       color: black;
+      }
+      #logo-raspberry{
+        width: 2vh;
+      }
+      
+
+   }

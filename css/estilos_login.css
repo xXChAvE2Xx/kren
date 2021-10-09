@@ -1,0 +1,125 @@
+
+      html{
+        width:100vw;
+        height:100vh;
+
+      }
+      body{
+        margin:0%;
+        width:100%;
+        height:100%;
+      }
+     
+      
+
+      .inf_logo{
+        float:right;
+        width:44%;
+        height:100%;
+        padding:12% !important;
+      }
+
+      .inf_logo{
+        padding:10%;
+      }
+
+      .formulario_login{
+        float: left;
+        width: 54%;
+        height: 100%;
+        padding: 14% !important;
+      }
+      .formulario_login{
+        padding:10%;
+      
+      }
+      .formulario_login input{
+        border-radius:20px;
+      }
+      .label{
+        font-size: 3rem;
+        margin-bottom: 6%;
+      }
+      .cent_inf_logo{
+         margin-top: -38%;
+      }
+     
+      
+      .field_login{
+        margin-top: -4%;
+      }
+      .wave{
+        width: 75vw;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        height: 100%;
+        z-index: -1;
+      }
+      .fa-kiwi-bird{
+        font-size: 526%;
+      }
+      #raspberry_logo{
+        height: 15%;
+        vertical-align: bottom;
+        min-height: 4vw;
+      }
+      .inf_logo i.fa-kiwi-bird{
+        font-size: 123%;
+        color: #3DD6AF;
+      }
+      .superior_label{
+       margin-left: -16%;
+      }
+      button.entrar{
+            width: 49%;
+            margin-left: 25%;
+      }
+      
+
+     @media screen and (max-width: 1024px){
+      html{
+        min-height: 267vw;
+        
+      }
+         #device_img {
+        height: 48vh;
+      }
+      .label{
+        font-size: 187%;
+      }
+      
+      .superior_label {
+        margin-left: 0;
+      }
+      .cent_inf_logo {
+        margin-top: 0%;
+      }
+
+      #raspberry_logo {
+        height: 8vh;
+      }
+
+      .inf_logo i.fa-kiwi-bird{
+        font-size: 123%;
+        color: black;
+
+      }
+
+      .inf_logo{
+        display: block;
+        width: 100%;
+        height:auto;
+      }
+
+      .formulario_login{
+        display: block;
+        width: 100%;
+        height: auto;
+        
+      }
+
+     
+   
+  
+    
