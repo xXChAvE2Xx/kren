@@ -16,5 +16,5 @@ data['clients'].append({
     'last_name': 'Rivers',
     'age': 36,
     'amount': 1.11})
-with open('demo.json', 'w') as file:
+with open('d.json', 'w') as file:
     json.dump(data, file, indent=4)
