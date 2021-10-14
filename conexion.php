@@ -1,10 +1,5 @@
-
 <?php
-
-
-$conn = new mysqli('localhost', 'root', 'T3si2', 'kren_db');
-
-
+$conn = new mysqli('localhost', 'root', 'root', 'kren_db_lqmpr');
 if ($conn->connect_error) {
     die('Error de Conexión (' . $conn->connect_errno . ') '. $conn->connect_error);
 }else{
@@ -14,7 +9,6 @@ if ($conn->connect_error) {
 
     }
 }
-
 /*
 $sql = "SELECT id_cliente, nombre_empresa FROM cliente";
 $result = $conn->query($sql);

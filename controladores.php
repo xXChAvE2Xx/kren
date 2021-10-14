@@ -1,7 +1,7 @@
  <?php
 
-	require $_SERVER["DOCUMENT_ROOT"].'/kren/conexion.php';
-	require $_SERVER["DOCUMENT_ROOT"].'/kren/conexion.php';
+	require $_SERVER["DOCUMENT_ROOT"].'/conexion.php';
+	require $_SERVER["DOCUMENT_ROOT"].'/conexion.php';
 	
 
 	$axn = $_POST['axn'];
@@ -57,24 +57,21 @@
 		break;
 
 		case 'mostrar_curso_detalle':
-
 			$id_curso = $_POST['id_curso'];
-			$sql = "SELECT hora_aplicacion, fecha_aplicacion, usuarios_permitidos, usuarios_registrados, usuarios_ilimitados, descripcion FROM Cursos WHERE id_curso = ".$id_curso.";";
+			$sql = "SELECT descripcion, fecha_hora_inicio, fecha_hora_fin, siguiente FROM cursos WHERE id_curso = '$id_curso';";
 			$result = $conn->query($sql);	
 
 			if ($result->num_rows > 0)
 			{
 				while($row = $result->fetch_assoc())
 				{
-					$info_curso[1] = $row["fecha_aplicacion"];
-					$info_curso[2] = $row["hora_aplicacion"];
-					$info_curso[3] = $row["usuarios_registrados"];
-					$info_curso[4] = $row["usuarios_permitidos"];
-					$info_curso[5] = $row["usuarios_ilimitados"];
-					$info_curso[6] = $row["descripcion"];
+					$datos_curso[1] = $row["descripcion"];
+					$datos_curso[2] = $row["fecha_hora_inicio"];
+					$datos_curso[3] = $row["fecha_hora_fin"];
+					$datos_curso[4] = $row["siguiente"];
 				}
 			} 
-			echo json_encode($info_curso);
+			echo json_encode($datos_curso);
 		break;
 
 		case 'borrar_curso':
@@ -87,41 +84,42 @@
 		case 'crear_curso':
 			$nombre = $_POST['nombre'];
 			$ponente = $_POST['ponente'];
-			$fecha= $_POST['fecha'];
-			$hora = $_POST['hora'];
-			$cant_usuarios = $_POST['cant_usuarios'];
-			$usuarios_ilimitados = $_POST['usuarios_ilimitados'];
 			$descripcion = $_POST['descripcion'];
+			$siguiente = $_POST['siguiente'];
 
-			$sql = "INSERT INTO Cursos (nombre_curso,  hora_aplicacion, fecha_aplicacion, usuarios_registrados, usuarios_permitidos, usuarios_ilimitados, nombre_ponente, descripcion) VALUES ('$nombre','$hora','$fecha','0','$cant_usuarios','$usuarios_ilimitados','$ponente','$descripcion');";
-			//$sql = "INSERT INTO cursos (hora_aplicacion) VALUES ('$hora');";
-			
-			
-			$result = $conn->query($sql);	
-		    echo json_encode($result);
+			if($siguiente=='true')
+			{
+				$sql=" UPDATE cursos SET  siguiente = '0' WHERE siguiente = '1';";
+				$result = $conn->query($sql);
+
+				$sql = "INSERT INTO cursos (nombre_curso, nombre_ponente, descripcion, siguiente) VALUES ('$nombre','$ponente','$descripcion','1');";
+				$result = $conn->query($sql);
+			}else{
+				$sql = "INSERT INTO cursos (nombre_curso, nombre_ponente, descripcion, siguiente) VALUES ('$nombre','$ponente','$descripcion','0');";
+				$result = $conn->query($sql);
+			}
+
+			echo json_encode($result);
 		break;
 
 		case 'actualizar_curso':
 			$id_curso = $_POST['id_curso'];
 			$nombre_curso = $_POST['nombre_curso'];
 			$ponente = $_POST['ponente'];
-			$fecha= $_POST['fecha'];
-			$hora = $_POST['hora'];
 		    $descripcion = $_POST['descripcion'];
-		    $usuarios_permitidos = $_POST['usuarios_permitidos'];
+			$siguiente = $_POST['siguiente'];
+				if($siguiente == 'true')
+				{
+					$siguiente = 1;
+					$sql="UPDATE cursos SET  siguiente = '0' WHERE siguiente = '1';";
+					$result = $conn->query($sql);
+				}
+				else
+					$siguiente = 0;
 
-		    if($usuarios_permitidos=='true')
-		    {
-			   $sql=" UPDATE Cursos
-					SET nombre_curso = '$nombre_curso', nombre_ponente= '$ponente', hora_aplicacion = '$hora', fecha_aplicacion = '$fecha', usuarios_permitidos = '0', usuarios_ilimitados = '1', descripcion = '$descripcion' WHERE id_curso = ".$id_curso.";";
-		    }else{
-		    	$sql=" UPDATE Cursos
-					SET nombre_curso = '$nombre_curso', nombre_ponente= '$ponente', hora_aplicacion = '$hora', fecha_aplicacion = '$fecha', usuarios_permitidos = '$usuarios_permitidos', usuarios_ilimitados = '0', descripcion = '$descripcion' WHERE id_curso = ".$id_curso.";";
-		    }
-		    $result = $conn->query($sql);	
+			   $sql="UPDATE cursos SET nombre_curso = '$nombre_curso', nombre_ponente= '$ponente', descripcion = '$descripcion', siguiente = '$siguiente' WHERE id_curso = ".$id_curso.";";
+		       $result = $conn->query($sql);	
 		    echo json_encode($result);
-
-            	
 		break;
 
 		case 'agregar_empleado':
@@ -230,6 +228,32 @@
 			$sql = "DELETE FROM Act_Act;";
 			$result = $conn->query($sql);
 			echo $result;
+		break;
+
+		case 'asistencias':
+			$id_curso = $_POST['id_curso'];;
+			$i=0;
+			$asistencias[]=0;
+			$sql = "SELECT empleados.id_empleado, empleados.nombre_empleado, empleados.area, rfid.entrada, rfid.salida FROM rfid INNER JOIN empleados ON rfid.id_empleado = empleados.id_empleado WHERE rfid.id_curso = '$id_curso';";
+			//$sql = "select * from rfid;";
+			$result = $conn->query($sql);	
+			if ($result->num_rows > 0)
+			{
+			
+				while($row = $result->fetch_assoc())
+				{
+					$asistencias[$i]   = $row['id_empleado'];
+					$asistencias[$i+1] = $row['nombre_empleado'];
+					$asistencias[$i+2] = $row['area'];
+					$asistencias[$i+3] = $row['entrada'];
+					$asistencias[$i+4] = $row['salida'];
+					$i=$i+5;
+				}
+
+				echo json_encode($asistencias);
+			}
+			else
+				echo json_encode('ERROR');
 		break;
 
 		default:

@@ -29,6 +29,11 @@
 
   <script src="lib/jQuery/jquery-3.6.0.min.js"></script><!--jquery-->
 
+  <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet"></link><!--datatables css-->
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js" ></script><!--datatables js-->
+  <script src="https://cdn.datatables.net/fixedcolumns/4.0.0/js/dataTables.fixedColumns.min.js" ></script><!--datatables js-->
+  <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.0.0/css/fixedColumns.dataTables.min.css" ><!--datatables css-->
+
   <link rel="stylesheet" href="lib/bulma/bulma.min.css"><!--Bulma-->
 
   <link href="css/estilos.css" rel="stylesheet"></link><!--Estilos | Kren.com-->
@@ -42,33 +47,41 @@
 
 
   <main>
-    <nav class="navbar navbar-dark bg-dark" aria-label="First navbar example">
+    <nav class="navbar navbar-dark bg-dark menu" aria-label="First navbar example">
       <div class="container-fluid">
         <a class="navbar-brand logo-name" href="#">
         <i class="fas fa-kiwi-bird"></i>&nbsp;Kren
         </a>
         <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample01" aria-controls="navbarsExample01" aria-expanded="false" aria-label="Toggle navigation">
-          <?php echo $user?>
+        <i class="fas fa-user-cog has-text-primary"></i>&nbsp;<?php echo $user?>
           <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="navbar-collapse collapse" id="navbarsExample01">
           <ul class="navbar-nav me-auto mb-2">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page">Nosotros</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer.</a>
+              <a class="nav-link active" aria-current="page">
+                <center><font align="jusify">Nosotros</font></center>
+              </a>
+                <span class="has-text-warning subtitle is-5">
+                  <center class="lema">
+                      Un grupo de aficionados a la programacón y amor por hacer las cosas mas faciles, con un enfoque tecnologico en todo lo que hacemos.
+                    <br>
+                    
+                      <i class="icon has-text-danger fas fa-hand-holding-heart"></i><span class="has-text-light subtitle is-5">+</span><i class="icon has-text-success fas fa-code"></i><span class="has-text-light subtitle is-5">=</span><span class="has-text-primary subtitle is-5 ">Kren</span>
+                 
+                  </center>
+                </span>
+             
             </li>
              <li class="nav-item">
-               <a class="nav-link active" aria-current="page">
-                <i class="fab fa-facebook"></i>
-                <i class="fab fa-twitter"></i>
-                <i class="fab fa-whatsapp"></i>
-                <span class="cerrar_sesion">
-                  <i class="fas fa-power-off"></i> Cerrar sesión
-                </span>
-              </a>
+                <a class="nav-link active controles_main" aria-current="page">
+                  <!-- <i class="fab fa-facebook"></i>&nbsp;&nbsp;
+                  <i class="fab fa-twitter"></i>&nbsp;&nbsp;
+                  <i class="fab fa-whatsapp"></i> -->
+                  <i class="button iredes is-warning"><i class="fab fa-facebook"></i>&nbsp;<i class="fab fa-twitter"></i>&nbsp;<i class="fab fa-whatsapp"></i></i>
+                  <i class="button cerrar_sesion  is-warning"><i class="fas fa-power-off"></i>&nbsp;Cerrar sesión </i>
+                </a>
             </li>
           </ul>
         </div>
@@ -102,28 +115,27 @@
         <ol class="list-group list-group-numbered lista_cursos" ><!--Listado de cursos-->
         </ol>
        
-          <div id="curso-detalle" class="">
-           <span id="titulo-detalle"></span>
-           <span id="ponente" title="Ponente"></span>
-             <div id="info">
-               
-              </div>
-              <span class="det_curso">
-                <span class="inscritos-detalle badge rounded-pill"></span>
-                <span class="fecha_aplicacion badge rounded-pill"></span>
-                <span class="hora_aplicacion badge rounded-pill"></span>
-              </span>
-            <span id="botones-detalle">
-              <!--<button type="button" class="btn btn-light iniciar_curso"> <i class="fas fa-edit"></i>Iniciar Curso</button>&nbsp;-->
-              <button type="button" class="btn btn-light editar_curso"> <i class="fas fa-edit"></i> Editar</button>&nbsp;
-              <button type="button" class="btn btn-warning confirm_borrar_curso"> <i class="fas fa-trash"></i> Borrar</button>
-            </span>
+          <div id="curso-detalle" class="animate__animated">
+           <span id="titulo-detalle" class="animate__animated curso-detalle-elementos" title="Titulo del curso"></span>
+           <span id="ponente" class="animate__animated curso-detalle-elementos" title="Ponente"></span>
+             <div id="info" class="animate__animated curso-detalle-elementos" title="Descripción del curso"></div>
+            
+                <span class="det_curso">
+                    <span class="fecha_hora_inicio badge rounded-pill curso-detalle-elementos"></span>
+                    <span class="fecha_hora_fin badge rounded-pill curso-detalle-elementos"></span>
+                </span>
+                <span id="botones-detalle">
+                  <!--<button type="button" class="btn btn-light iniciar_curso"> <i class="fas fa-edit"></i>Iniciar Curso</button>&nbsp;-->
+                  <button type="button" class="btn btn-light editar_curso" title="Editar este curso"> <i class="fas fa-edit"></i> Editar</button>&nbsp;
+                  <button type="button" class="btn btn-warning confirm_borrar_curso" title="Borrar este curso"> <i class="fas fa-trash"></i> Borrar</button>
+                </span>
+              
           </div>
       </div>
     
       <div id="cont-d" ><!--contenido derecha-->
-       <div id="agregar-curso">
-         <section class="selector_opc">
+       <div id="agregar-curso" class="animate__animated">
+         <div class="selector_opc">
            <span class="backcolor" id="plus-agregar">
               <i class="fas fa-plus"></i>
               <br>Crear curso
@@ -132,22 +144,27 @@
             <i class="fas fa-user-plus"></i>
             <br>Agregar empleado
            </span>
+           <span class="backcolor" id="listado_asistencias">
+                <i class="fas fa-list"></i>
+                <br>Asistencias
+            </span>
            
-         </section>
+         </div>
 
           <span id="form-agregar-curso" class="span-formularios">
             <form id="form-agregar-curso">
               <span>Nombre del curso</span> <br><input class="input-group-text input is-primary"  name="nombre_curso" type="text" placeholder="Nombre del curso"><br>
                <span>Ponente</span> <br><input class="input-group-text input is-primary"  name="ponente" type="text" placeholder="Ponente"><br>
-              <span>Fecha / hora de aplicación</span><br><input class="input-group-text input is-primary fecha_form" name="fecha" type="date" placeholder=""><input class="input-group-text input is-primary fecha_form" name="hora" type="time" placeholder=""><br>
-              <span id="cantidad-usuarios-span">Cantidad de usuarios permitidos</span>
-              <span class="btn-group">
-                <input   class="input-group-text input is-primary u_permitidos" type="number" name="cant_usuarios" placeholder="#">
-                <span class="form-check form-switch usu_permitidos">
-                  <input class="form-check-input usu_permitidos_switch" type="checkbox" id="flexSwitchCheckDefault"> 
-                  Ilimitados
-              </span>
-              </span>
+              <span id="cantidad-usuarios-span"><center>Tomar este curso la proxima vez?</center></span>
+              <center>
+                <span class="btn-group">
+                  No&nbsp;
+                  <span class="form-check form-switch usu_permitidos">
+                    <input class="form-check-input siguiente_switch" type="checkbox" id="flexSwitchCheckDefault"> 
+                    Si
+                  </span>
+                </span>
+              </center>
               <br><span>Descripción del curso</span><br>
               
               <textarea class="is-primary des_form" maxlength="300" placeholder="Descripción del curso" name ="descripcion"></textarea><br>
@@ -179,20 +196,39 @@
         
       </div>
 
-        <div id="actividad-actual" class="col col-xs-11">
-         <center>
-           <label id="tit-actividad-actual">
-              <i class="fab fa-raspberry-pi"></i> Actividad actual
-           </label>
-           <br>
-           <label id="label-actividad-act" class="col col-md-11">
+        <div id="actividad-actual" class="col col-xs-11 animate__animated">
+          <center>
+            <label id="tit-actividad-actual" title="Aqui se muestra lo que esta sucediendo actualmente en el dispositivo">
+                <i class="fab fa-raspberry-pi"></i> Actividad actual
+            </label>
+            <br>
+            <label id="label-actividad-act" class="col col-md-11 animate__animated">
 
-            </label> 
-          <br>
-           <button type="button" value="" class="btn btn-light mostrarTiempoReal"><i class="fas fa-eye"></i>Mostrar actividad actual</button>
-           <button type="button" value="" class="btn btn-light ocultarTiempoReal"><i class="fas fa-eye"></i>Ocultar actividad actual</button>
-         </center><!--Actividad actual-->
-      </div>
+              </label> 
+            <br>
+            <button type="button" value="" class="button btn-light mostrarTiempoReal is-rounded"><i class="fas fa-eye"></i>&nbsp;Mostrar actividad actual</button>
+            <button type="button" value="" class="button btn-light ocultarTiempoReal is-rounded"><i class="far fa-eye-slash"></i>&nbsp;Ocultar actividad actual</button>
+          </center><!--Actividad actual-->
+        </div>
+
+         <!-----------------Tabla asistencias----------------->
+         <table id="example" class="stripe row-border order-column nowrap" style="width:100%; height:100% !important; ">
+          <thead>
+              <tr>
+                  <th>Empleado</th>
+                  <th>Area</th>
+                  <th>Entrada</th>
+                  <th>Salida</th>
+              </tr>
+          </thead>
+          <tbody>
+              <!--<tr><td>Marcelo Ramirez Morfin</td><td>Sistemas</td><td>'2021-09-24 15:45:25'</td><td>'2021-09-24 15:45:28'</td></tr>-->
+              
+              
+          </tbody>
+        </table>
+
+
     </div>
   </div>
 <center>

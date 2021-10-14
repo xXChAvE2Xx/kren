@@ -2,14 +2,16 @@
       background:  #c6c6c9 url('../img/background.png');
       height: 100vh;
       width: 100vw;
-      min-width: 31vh;
+      min-width: 44vh;
 
     }
 
     .cerrar_sesion{
       float: right !important; 
-      margin-right: 1% !important;
-      color:  white;
+      /*margin-right: 1% !important;*/
+      border-top-left-radius: 21px;
+      border-bottom-left-radius: 21px;
+      /*margin-right: -1.7% !important;*/
     }
 
 
@@ -92,6 +94,9 @@
        margin-top: 2%;
        margin: 2%;
     }
+    #botones-detalle button{
+      border-radius: 21px;
+    }
 
   
     
@@ -128,7 +133,7 @@
   }
 
   footer{
-
+        min-width: 44vh;
         padding: 1%;
         display: flow-root;
         color: white;
@@ -161,25 +166,28 @@
   }
  
   #actividad-actual{
-    min-height: 14vw;
+    min-height: 12.5vw;
+    padding-bottom: 2%;
   }
   #tit-actividad-actual{
     min-height: 2vw;
   }
   #label-actividad-act{
-    min-height: 8vw;
+    min-height: 7.5vw;
+    max-height: 12vh;
   }
   form{
     min-height: 25vw;
   }
   .selector_opc{
     text-align: center;
+    
   }
   .selector_opc span{
     background-color: #2f323c;
     border-radius: 9px;
     padding: 1%;
-    margin-top: 10vw;
+    margin:1%;
     display: inline-block;
     width: 38%;
     border: 2px solid transparent;
@@ -229,12 +237,67 @@
     border-radius: 18px !important;
   }
 
+  
+  .lista_seleccionado{
+    background-color: #1d2f39b5 !important;
+    color: #ffc107;
+  }
 
+  .cursor:hover{
+    background-color:#88898a4f;
+    cursor: pointer;
+  }
+
+  #example_wrapper{
+    background-color: #f7fafc82 !important;
+    border-radius: 21px;
+  }
+  #example_wrapper div{
+    background-color: #ffffff00 !important;
+  }
+
+  .dataTables_filter input{
+    border-top-right-radius: 21px !important;
+    text-align: center;
+  }
+
+  .boton-volver-asistencias{
+    border-top-left-radius: 21px !important;
+  }
  
+  .controles_main:not(button){ 
+    margin-top: -2%;
+    font-size: 100%;
+    line-height: 2.3;
+    /*width: 103.3%;
+    margin-left: -2%;*/
+  }
+
+  .iredes{
+    margin-left: -1vh;
+    border-top-right-radius: 21px;
+    border-bottom-right-radius: 21px;
+  }
+
+  #curso-detalle-elementos {
+    --animate-duration: 0.3s;
+  }
 
   
+  .retardo_formularios{
+    --animate-duration: 0.3s;
+  }
 
    
+  .disp_desconectado{
+    width: 100%;
+  }
+
+  .menu{
+    
+    background-color: #2f323c !important;
+  }
+
 
 
 
@@ -246,7 +309,7 @@
 
 
 
-@media only screen and (min-width : 881px)/*901 hacia arriba*/
+@media only screen and (min-width : 881px)/*881 hacia arriba*/
     {
       #agregar-curso{
         height: 37.7vh;
@@ -254,14 +317,14 @@
     }
 
 
-@media only screen and (min-width : 1200px)/*901 hacia arriba*/
+@media only screen and (min-width : 1200px)/*1200 hacia arriba*/
     {
       #agregar-curso{
         height: 40vh;
       }
     }
 
-@media only screen and (min-width : 1400px)/*901 hacia arriba*/
+@media only screen and (min-width : 1400px)/*1400 hacia arriba*/
     {
       #agregar-curso{
         height: 43vh;
@@ -271,12 +334,14 @@
     
  @media only screen and (min-device-width : 901px)/*901 hacia arriba*/
       {
-       
-          #cont-d div{
+         
+        .selector_opc{
+          margin-top: 13vh;
+        }
+
+          #cont-d div:not(.selector_opc){
               background-color: #6e7275a8; 
           }
-        
-
 
           #cont-i{
             float: left;
@@ -297,7 +362,7 @@
               border-radius: 4px;
               color: #d5d8d7;
               margin-bottom: 6.3%;
-              
+              display: flow-root;
           }
 
          
@@ -306,12 +371,11 @@
           
           #actividad-actual{
             margin-top: 5.8vh;
-            
             border-radius: 4px;
             color: #d5d8d7;
             font-size: 1.2vw;
             color:#ffbe00;
-            height: 25vh;
+            height: auto;
           }
 
 
@@ -320,13 +384,13 @@
           }
           
           #botones-detalle button{
-            font-size: 98%;
+            font-size: 71%;
           }
           
           #label-actividad-act{
             overflow-y:scroll ;
-            height: 16vh;
-            height: 8vw;
+          
+            height: 7.5vw;
           }
 
          
@@ -386,6 +450,23 @@
    /*abajo de 900*/
    @media only screen and (max-device-width : 900px)/*900 hacia abajo*/
     {
+      .det_curso{
+        display: block;
+        width: 100%;
+        text-align: center;
+       }
+      .lema{
+        font-size: 2vh;
+      }
+      .menu{
+        font-size: 2.3vh;
+      }
+      .iredes,.cerrar_sesion{
+        font-size: 1.5vh;
+      }
+      #example_wrapper{
+        font-size: 1.7vh !important;
+      }
       .panel-barra-busqueda *{
         font-size: 2vh !important;
       }
@@ -416,7 +497,7 @@
       
       main {
         font-size: 2vh;
-        min-width: 50vh;
+        min-width: 44vh;
       }
       
       #cont-d
@@ -425,7 +506,7 @@
         padding-left: 2vh;
          padding-right: 2vh;
       }
-      #cont-d div{
+      #cont-d div:not(.selector_opc){
         background-color: #6e7275a8; 
         border-radius: 11px;
       }
@@ -448,7 +529,7 @@
       
       #actividad-actual{
         margin-top: 3vh;
-        height: 18vh;
+        height: auto;
         font-size: 1.5vh;
       }
 
@@ -459,8 +540,8 @@
 
        #label-actividad-act{
           overflow-y:scroll ;
-          height: 16vh;
-          height: 18vw;
+         
+          height: auto;
        }
       
       .list-group{
@@ -516,7 +597,7 @@
         width: 2vh;
       }
       footer{
-        font-size: 234%;
+        font-size: 2.5vh;
         margin-top: 2%;
         padding: 2%;
       }
@@ -524,7 +605,7 @@
 
 
 }
-@media only screen and (min-width : 710px) and (max-width : 880px)
+@media only screen and (min-width : 710px) and (max-width : 880px)/*desde 710 hasta 880*/
   {
     #curso-detalle
     {
@@ -534,7 +615,7 @@
   }
 
 
-@media only screen and (max-width : 710px)
+@media only screen and (max-width : 710px)/*710 hacia abajo*/
 {
   
     
@@ -567,14 +648,28 @@
         padding-left: 2vh;
          padding-right: 2vh;
       }
-      #cont-d div{
+      #cont-d div:not(.selector_opc){
         background-color: #6e7275a8; 
         border-radius: 11px;
       }
 
+      div#example_length, div#example_filter{
+       
+        display: inline-block;
+        width: 48%; 
+      }
+      div#example_length label{
+        float: left !important;
+      }
+      div#example_filter label{
+        float: right !important;
+      }
+
+
+
 
       main {
-        min-width: 50vh;
+        min-width: 44vh;
       }
       #cont-i{
         padding: 4%;
@@ -597,7 +692,7 @@
 
       #actividad-actual{
         margin-top: 3vh;
-        height: 16vh;
+        height: auto;
         font-size: 1.5vh;
       }
 
@@ -608,8 +703,8 @@
 
        #label-actividad-act{
           overflow-y:scroll ;
-          height: 16vh;
-          height: 18vw;
+        
+          height: auto;
        }
       
       .list-group{
@@ -653,7 +748,7 @@
       }
 
       #contenido{
-        min-width: 49vh;
+        min-width: 44vh;
         margin-top: -3vw;
       }
       
@@ -669,3 +764,8 @@
       
 
    }
+
+
+
+
+   

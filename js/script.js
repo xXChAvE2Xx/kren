@@ -1,43 +1,76 @@
-$(document).ready(function() {
+$(document).ready(function () {
     $("#label-actividad-act").hide();
     $(".ocultarTiempoReal").hide();
     $("#esperaTag").hide();
-    
+
     $('input.barra-busqueda').attr('placeholder', 'Buscar curso ó ponente');
-    var estado_lista = '';
+    let estado_lista = '';
+    let table = '';
     //llamamos a la funcion para listar los cursos
     listado_cursos();
     //ocultamos formularios el de cursos se oculta solo en listado_curso()
     $("#form-agregar-empleado").hide();
-    var id_curso_en_detalle = 0;
+    let id_curso_en_detalle = 0;
+    let id_curso_en_datatable = 0;
+
+
     //muestra los detalles de un curso
     function mostrar_curso_detalle(id_curso) {
         if (id_curso_en_detalle == id_curso) return false;
         $.ajax({
             method: "POST",
-            url: "/kren/controladores.php",
+            url: "../controladores.php",
             data: {
                 axn: "mostrar_curso_detalle",
                 id_curso: id_curso
             }
-        }).done(function(data) {
+        }).done(function (data) {
+           
+            /*$("#curso-detalle").addClass('animate__fadeOut');
+            setTimeout(function(){ $("#curso-detalle").removeClass('animate__fadeOut');},800)*/
+
+            //coloca el (titulo) en el detalle
             $("#titulo-detalle").text($(".nombre_curso[id_curso=" + id_curso + "]").text());
+            //coloca el atributo para saber si este curso es el siguiente
+            $("#titulo-detalle").attr('siguiente',JSON.parse(data)[4]);
+            //coloca el (ponente) en el detalle
             $("#ponente").html('<i class="fas fa-user-tie"></i> ' + $(".ponente[id_curso=" + id_curso + "]").text());
-            $("#info").text(JSON.parse(data)[6]);
-            if (JSON.parse(data)[5] != 1) {
-                $(".inscritos-detalle").text('Registrados: ' + JSON.parse(data)[3] + '/' + JSON.parse(data)[4]);
-                $(".inscritos-detalle").attr('registrados', JSON.parse(data)[3]);
-                $(".inscritos-detalle").attr('permitidos', JSON.parse(data)[4]);
-            } else {
-                $(".inscritos-detalle").text('Registrados: ' + JSON.parse(data)[3] + '/ilimitados');
-                $(".inscritos-detalle").attr('registrados', JSON.parse(data)[3]);
-                $(".inscritos-detalle").attr('permitidos', 'false');
+            //coloca la (descripcion) en el detalle
+            $("#info").text(JSON.parse(data)[1]);
+            
+            //animaciones de entrada
+            $("#titulo-detalle,#ponente").addClass('animate__flash');
+            setTimeout(function () { $("#titulo-detalle,#ponente").removeClass('animate__flash'); }, 300)
+
+
+            if(JSON.parse(data)[2] != null){
+                $(".fecha_hora_inicio").text('Inicio: ' + JSON.parse(data)[2]);
+                $(".fecha_hora_inicio").attr('title','Fecha y hora en que comenzo este curso');
+
+                if(JSON.parse(data)[3] != null)
+                {
+                     $(".fecha_hora_fin").text('Fin: ' + JSON.parse(data)[3]);
+                     $(".fecha_hora_fin").attr('title','Fecha y hora en que finalizo este curso');
+                }
+                else
+                {
+                    $(".fecha_hora_fin").text('En proceso de aplicacion');
+                    $(".fecha_hora_fin").attr('title','Aun no ha finalizado, este curso');
+                }
+                $(".fecha_hora_fin").addClass('animate__bounceIn');
+                setTimeout(function () { $(".fecha_hora_fin").removeClass('animate__bounceIn'); }, 300)
+                
+            }else{
+                $(".fecha_hora_fin").text('');
+                $(".fecha_hora_inicio").text('Aun no se aplica');
+                $(".fecha_hora_inicio").attr('title','Aun no se aplica este curso');
+                $(".fecha_hora_inicio").addClass('animate__bounceIn');
+                setTimeout(function () { $(".fecha_hora_inicio").removeClass('animate__bounceIn'); }, 300)
             }
-            $(".fecha_aplicacion").text('Aplicación: ' + JSON.parse(data)[1]);
-            $(".fecha_aplicacion").attr('fecha', JSON.parse(data)[1]);
-            $(".hora_aplicacion").text('Hora: ' + JSON.parse(data)[2]);
-            $(".hora_aplicacion").attr('hora', JSON.parse(data)[2]);
+            
+                
             id_curso_en_detalle = id_curso;
+
         })
     }
     //lista los cursos diponibles
@@ -46,31 +79,39 @@ $(document).ready(function() {
             $('.list-group').empty();
             estado_lista = 'cursos';
         } else return false;
-        console.log('aca:');
+
         //carga listado de cursos
         $.ajax({
             method: "POST",
-            url: "/kren/controladores.php",
+            url: "../controladores.php",
             data: {
                 axn: "listado_cursos"
             }
-        }).done(function(data) {
+        }).done(function (data) {
             //mostramos el primer curso en detalle
             mostrar_curso_detalle(JSON.parse(data)[1]);
             id_curso_en_detalle = JSON.parse(data)[1];
             for (var i = 1; JSON.parse(data)[i] != null; i = i + 3) {
                 //comprueba que no exista el elemento actual
                 if ($("li[id_curso=" + JSON.parse(data)[i] + "]").text() == '') {
-                    $(".list-group").append('<li id_curso="' + JSON.parse(data)[i] + '" class="list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto"><div class="fw-bold nombre_curso" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 1] + '</div>Ponente: <span class="ponente" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 2] + '</span></div> <span class="badge rounded-pill ver-curso" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-eye"></i></span></li');
+                    $(".list-group").append('<li id_curso="' + JSON.parse(data)[i] + '" class="list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto"><div class="fw-bold nombre_curso" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 1] + '</div>Ponente: <span class="ponente" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 2] + '</span></div> <span class="badge rounded-pill ver-curso" title="Ver el detalle de este curso" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-eye"></i></span><span class="badge rounded-pill" title="Comenzar este curso" id_curso=""><i class="fas fa-play"></i></span></li');
                     $(".iniciar_curso").attr("id_curso", id_curso_en_detalle);
                 }
             }
-            $(".ver-curso").click(function() {
-                $("#form-agregar-curso").hide();
-                $("#agregar-curso").css('background-color', '#6e7275a8');
-                $(".selector_opc").show();
-                $(".iniciar_curso").attr("id_curso",$(this).attr('id_curso'));
-                mostrar_curso_detalle($(this).attr('id_curso'));
+            $(".ver-curso").click(function () {
+
+                if ($("#form-agregar-curso").css('display') != 'none' || $("#form-agregar-empleado").css('display') != 'none')
+                    $('.cerrar-formulario').click();
+
+
+                /* $("#agregar-curso").css('background-color', '#6e7275a8');
+                 $(".selector_opc").show();*/
+                if (id_curso_en_detalle != $(this).attr('id_curso')) {
+                    $(".iniciar_curso").attr("id_curso", $(this).attr('id_curso'));
+                    mostrar_curso_detalle($(this).attr('id_curso'));
+                } else {
+                    shake('#curso-detalle');
+                }
             });
         })
     }
@@ -83,11 +124,11 @@ $(document).ready(function() {
         //carga listado de cursos
         $.ajax({
             method: "POST",
-            url: "/kren/controladores.php",
+            url: "../controladores.php",
             data: {
                 axn: "listado_empleados"
             }
-        }).done(function(data) {
+        }).done(function (data) {
             //mostramos el primer empleado en detalle
             /* mostrar_curso_detalle(JSON.parse(data)[1]);
              id_curso_en_detalle = JSON.parse(data)[1];*/
@@ -108,33 +149,23 @@ $(document).ready(function() {
     }
     //crea un curso nuevo
     function crear_curso() {
-        if ($('.usu_permitidos_switch').prop('checked') == true) {
-            var $cant_usuarios = 0;
-            var $ilimitados = 1;
-        } else {
-            var $cant_usuarios = $("input[name='cant_usuarios']").val();
-            var $ilimitados = 0;
-        }
         $.ajax({
             method: "POST",
-            url: "/kren/controladores.php",
+            url: "../controladores.php",
             data: {
                 axn: "crear_curso",
                 nombre: $("input[name='nombre_curso']").val(),
                 ponente: $("input[name='ponente']").val(),
-                fecha: $("input[name='fecha']").val(),
-                hora: $("input[name='hora']").val(),
-                cant_usuarios: $cant_usuarios,
-                usuarios_ilimitados: $ilimitados,
+            siguiente: $('.siguiente_switch').prop('checked'),
                 descripcion: $("textarea[name='descripcion']").val()
             }
-        }).done(function(data) {
+        }).done(function (data) {
             if (JSON.parse(data) == true) {
                 estado_lista = '';
                 listado_cursos();
                 $("#form-agregar-curso input").val('');
                 $("#form-agregar-curso textarea").val('');
-                $("#form-agregar-curso input[type='checkbox']").removeAttr('checked');
+                $(".siguiente_switch").prop('checked',false)
                 $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Curso agregado con exito");
                 $(".modal-exito").show();
             } else {
@@ -147,7 +178,7 @@ $(document).ready(function() {
     function agregar_empleado() {
         $.ajax({
             method: "POST",
-            url: "/kren/controladores.php",
+            url: "../controladores.php",
             data: {
                 axn: "agregar_empleado",
                 nombre: $("input[name='nombre_empleado']").val(),
@@ -158,19 +189,19 @@ $(document).ready(function() {
                 domicilio: $("input[name='domicilio']").val(),
                 id_RFID: $("#VincularRFID").attr("RFID")
             }
-        }).done(function(data) {
+        }).done(function (data) {
             var data = data.trim();
-            console.log(data);
+
             if (data == "true") {
-                if(data != 0){
+                if (data != 0) {
                     $("#form-agregar-empleado input").val('');
-                    console.log(data);
+
                     $("#VincularRFID").removeAttr("RFID")
                     $("#VincularRFID").removeClass("btn-success");
                     $("#VincularRFID").addClass("btn-warning");
                     $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Empleado agregado con exito");
                     $(".modal-exito").show();
-                }else{
+                } else {
                     $(".modal-exito .title").html("<i class='fas fa-times'></i> Error: RFID utilizado por otro usuario");
                     $(".modal-exito").show();
                     $("#VincularRFID").removeClass("btn-success");
@@ -179,7 +210,7 @@ $(document).ready(function() {
                 }
             } else {
                 $(".modal-exito .title").html("<i class='fas fa-times'></i> Error al agregar el empleado");
-                $(".modal-exito").show();       
+                $(".modal-exito").show();
             }
             estado_lista = '';
             listado_empleados();
@@ -189,7 +220,7 @@ $(document).ready(function() {
     function filtrar_listado() {
         var busqueda = $('input.barra-busqueda').val();
         if (estado_lista == 'cursos') {
-            $('.list-group li').each(function(index) {
+            $('.list-group li').each(function (index) {
                 if ($(this).first().text().replace('Ponente:', '').indexOf(busqueda) >= 0) {
                     $('li[id_curso=' + $(this).attr('id_curso') + ']').attr("style", "display: flex !important");
                 } else {
@@ -198,7 +229,7 @@ $(document).ready(function() {
             });
         }
         if (estado_lista == 'empleados') {
-            $('.list-group li').each(function(index) {
+            $('.list-group li').each(function (index) {
                 if ($(this).first().text().replace('Area:', '').indexOf(busqueda) >= 0) {
                     $('li[id_empleado=' + $(this).attr('id_empleado') + ']').attr("style", "display: flex !important");
                 } else {
@@ -209,62 +240,140 @@ $(document).ready(function() {
     }
 
     //Muestra el registro tiempo real
-    function tiempo_real(){
+    function tiempo_real() {
         $.ajax({
             method: "POST",
-            url:"/kren/controladores.php",
-            data: {axn:'actualizar_Entradas'},
+            url: "../controladores.php",
+            data: { axn: 'actualizar_Entradas' },
             dataType: 'text'
-        }).done(function(data){
-            //console.log(data);
-            $("#label-actividad-act").html(data);
+        }).done(function (data) {
+
+            if (data.includes('Warning') == true) {
+                $("#label-actividad-act").html("<br><section title='Al parecer tienes apagado el dispositivo, o simplemente no haz iniciado un curso...' class='notification disp_desconectado is-warning animate__animated animate__zoomin'><i class='fas fa-plug'></i> Dispositivo desconectado o sin actividad...<i class='fas fa-bed'></i></section>");
+                setTimeout(function () { 
+                    $('.ocultarTiempoReal').click();
+                    $("#label-actividad-act").html('');
+                }, 5000)
+            } else {
+                $("#label-actividad-act").html(data);
+            }
+
         })
     }
-    
-    
+
+
 
     $("#form-agregar-curso").hide();
-    $("#plus-agregar").click(function() {
-        $(".selector_opc").hide();
-        $("#agregar-curso").css('background-color', '#ffffff00');
-        $("button.guardar_cambios").hide();
-        $("button.crear_curso").show();
-        $("#form-agregar-curso").show();
+    $("#plus-agregar").click(function () {
+        //reseteamos formulario
+        $("input[name='nombre_curso']").val('');
+        $("input[name='ponente']").val('');
+        $(".siguiente_switch").prop('checked', false);
+        $("textarea[name='descripcion']").text('');
+
+        //hacemos scroll para dispositivos moviles
         window.scrollTo(0, 1000);
+
+        $("#agregar-curso").addClass('animate__slideOutRight retardo_formularios');
+        setTimeout(function () {
+            $(".selector_opc").hide();
+            $("#agregar-curso").css('background-color', '#ffffff00');
+            $("#agregar-curso").removeClass('animate__slideOutRight retardo_formularios');
+            $("#agregar-curso").hide();
+
+            $("button.guardar_cambios").hide();
+            $("button.crear_curso").show();
+            $("#form-agregar-curso").show();
+            $("#agregar-curso").addClass('animate__slideInRight retardo_formularios');
+            $("#agregar-curso").show();
+            setTimeout(function () { $("#agregar-curso").removeClass('animate__slideInRight retardo_formularios'); }, 300);
+
+        }, 300);
+
+
+
+
     });
-    $("#plus-agregar-empleado").click(function() {
-        $(".selector_opc").hide();
-        $("#agregar-curso").css('background-color', '#ffffff00');
-        $("button.guardar_cambios_empleado").hide();
-        $("button.agregar_empleado").show();
-        $("#form-agregar-empleado").show();
+    $("#plus-agregar-empleado").click(function () {
+        /* $(".selector_opc").hide();
+         $("#agregar-curso").css('background-color', '#ffffff00');
+         $("button.guardar_cambios_empleado").hide();
+         $("button.agregar_empleado").show();
+         $("#form-agregar-empleado").show();
+         window.scrollTo(0, 1000);*/
+
+
+
+
         window.scrollTo(0, 1000);
+
+        $("#agregar-curso").addClass('animate__slideOutRight retardo_formularios');
+        setTimeout(function () {
+            $(".selector_opc").hide();
+            $("#agregar-curso").css('background-color', '#ffffff00');
+            $("#agregar-curso").removeClass('animate__slideOutRight retardo_formularios');
+            $("#agregar-curso").hide();
+
+            $("button.guardar_cambios_empleado").hide();
+            $("button.agregar_epleado").show();
+            $("#form-agregar-empleado").show();
+            $("#agregar-curso").addClass('animate__slideInRight retardo_formularios');
+            $("#agregar-curso").show();
+            setTimeout(function () { $("#agregar-curso").removeClass('animate__slideInRight retardo_formularios'); }, 300);
+
+        }, 300);
+
+
+
     });
-    $(".cerrar-formulario").click(function() {
+    $(".cerrar-formulario").click(function () {
+
         $("#form-agregar-empleado input").val('');
         $("#VincularRFID").removeAttr("RFID")
         $("#VincularRFID").removeClass("btn-success");
         $("#VincularRFID").removeClass("btn-danger");
         $("#VincularRFID").addClass("btn-warning");
-        $(".span-formularios").hide();
-        $("#agregar-curso").css('background-color', '#6e7275a8');
-        $(".selector_opc").show();
-        $("#esperaTag").hide();
-        $("#msjRfid").show();
+
+
+        $("#agregar-curso").addClass('animate__bounceOutRight');
+        setTimeout(function () {
+            $("#agregar-curso").removeClass('animate__bounceOutRight');
+            $(".span-formularios").hide();
+
+
+            $("#agregar-curso").addClass('animate__bounceInRight');
+            $("#agregar-curso").css('background-color', '#6e7275a8');
+            $(".selector_opc").show();
+            $("#esperaTag").hide();
+            $("#msjRfid").show();
+            setTimeout(function () {
+                $("#agregar-curso").removeClass('animate__bounceInRight');
+            }, 500);
+
+        }, 400);
+
+
+
+
+
+
+
+
+
     });
-    $(".confirm_borrar_curso").click(function() {
+    $(".confirm_borrar_curso").click(function () {
         $(".modal-borrar-curso").css('display', 'block');
     });
-    $(".borrar_curso").click(function() {
+    $(".borrar_curso").click(function () {
         $(".modal").css('display', 'none');
         $.ajax({
             method: "POST",
-            url: "/kren/controladores.php",
+            url: "../controladores.php",
             data: {
                 axn: "borrar_curso",
                 id_curso: id_curso_en_detalle
             }
-        }).done(function(data) {
+        }).done(function (data) {
             if (JSON.parse(data) == true) {
                 //modal de exito
                 $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Curso borrado con exito");
@@ -274,80 +383,102 @@ $(document).ready(function() {
                 var anterior = $(".lista_cursos li[id_curso=" + id_curso_en_detalle + "]").prev('li').attr('id_curso');
                 if (anterior == '' && siguiente != '') mostrar_curso_detalle(siguiente);
                 else
-                if (siguiente == '' && anterior != '') mostrar_curso_detalle(anterior);
+                    if (siguiente == '' && anterior != '') mostrar_curso_detalle(anterior);
                 //removemos curso actual
                 $(".lista_cursos li[id_curso=" + id_curso_en_detalle + "]").remove();
             }
         })
     });
-    $(".cerrar_modal").click(function() {
+    $(".cerrar_modal").click(function () {
         $(".modal").css('display', 'none');
     });
-    $(".crear_curso").click(function() {
-        if ($('.usu_permitidos_switch').prop('checked') == true) {
-            if ($("input[name='nombre_curso']").val() != '' && $("input[name='fecha']").val() != '' && $("input[name='ponente']").val() != '' && $("input[name='hora']").val() != '' && $("textarea[name='descripcion']").val() != '') crear_curso();
+    $(".crear_curso").click(function () {
+
+            if ($("input[name='nombre_curso']").val() != '' && $("input[name='ponente']").val() != ''  && $("textarea[name='descripcion']").val() != '') 
+            crear_curso();
             else {
                 $(".modal-exito .title").html("<i class='fas fa-times'></i> Datos incompletos");
                 $(".modal-exito").show();
             }
-        } else {
-            if ($("input[name='nombre_curso']").val() != '' && $("input[name='cant_usuarios']").val() != '' && $("input[name='fecha']").val() != '' && $("input[name='ponente']").val() != '' && $("input[name='hora']").val() != '' && $("textarea[name='descripcion']").val() != '') crear_curso();
-            else {
-                $(".modal-exito .title").html("<i class='fas fa-times'></i> Datos incompletos");
-                $(".modal-exito").show();
-            }
-        }
     });
-    $(".agregar_empleado").click(function() {
+    $(".agregar_empleado").click(function () {
         if ($("input[name='nombre_empleado']").val() != '' && $("input[name='correo']").val() != '' && $("input[name='fecha_nacimiento']").val() != '' && $("input[name='area_departamento']").val() != '' && $("input[name='telefono']").val() != '' && $("input[name='domicilio']").val() != '') agregar_empleado();
         else {
             $(".modal-exito .title").html("<i class='fas fa-times'></i> Datos incompletos");
             $(".modal-exito").show();
         }
     });
-    $('.usu_permitidos_switch').click(function() {
-        if ($('.usu_permitidos_switch').prop('checked') == true) $('input.u_permitidos').prop('disabled', true);
-        else $('input.u_permitidos').prop('disabled', false);
-    });
-    $('.editar_curso').click(function() {
-        window.scrollTo(0, 1000);
-        $(".selector_opc").hide();
-        $("#agregar-curso").css('background-color', '#ffffff00');
-        $("#form-agregar-curso").show();
+   
+
+
+    $('.editar_curso').click(function () {
+        //solo si el formulario ya esta mostrandose
+        if ($('#form-agregar-curso').css('display') != 'none') {
+            //solo si el formulario no esta vacio
+            if($('input[name=nombre_curso]').val() != ''){
+                 shake('#agregar-curso');//hacemos un focus para el usuario
+                 return false;
+            }else{
+                bouncein('#agregar-curso');
+                //rellenamos los datos correspondientes en el formulario
+                $("input[name='nombre_curso']").val($('span#titulo-detalle').text());
+                $("input[name='ponente']").val($('span#ponente').text());
+                $('textarea.des_form').text($('#info').text());
+                //colocamos los botones correspondientes
+                $("button.guardar_cambios").show();
+                $("button.crear_curso").hide();
+                //checkeamos el switch segun corresponda
+                if($('#titulo-detalle').attr('siguiente')==1)
+                     $('.siguiente_switch').prop('checked', true);
+                else
+                     $('.siguiente_switch').prop('checked', false);
+                return false;
+            }
+        }
+        //si el datatable esta mostrandoce
+        if ($('#example_wrapper').css('display') == 'block')
+            $('.ocultar-asistencias').click();//ocultamos el datatable
+
+        window.scrollTo(0, 1000);//scroll para dispositivos moviles
+        backoutright("#agregar-curso");//ocultamos el div de los formularios
+        //reseteamos elementos
+        setTimeout(function () {
+            $(".selector_opc").hide();
+            $("#agregar-curso").css('background-color', '#ffffff00');
+            $("#form-agregar-curso").show();//mostramos el formulario correspondiente
+            backinright("#agregar-curso");
+        }, 400);
+
+        //reemplazamos los valores correspondientes
         $("input[name='nombre_curso']").val($('span#titulo-detalle').text());
         $("input[name='ponente']").val($('span#ponente').text());
-        $("input[name='fecha']").val($('span.fecha_aplicacion').attr('fecha'));
-        $("input[name='hora']").val($('span.hora_aplicacion').attr('hora'));
         $('textarea.des_form').text($('#info').text());
-        if ($(".inscritos-detalle").attr('permitidos') == 'false') {
-            $('input.usu_permitidos_switch').prop('checked', true);
-            $("input[name='cant_usuarios']").val('');
-            $("input[name='cant_usuarios']").prop('disabled', true);
-        } else {
-            $('input.usu_permitidos_switch').prop('checked', false);
-            $("input[name='cant_usuarios']").prop('disabled', false)
-            $("input[name='cant_usuarios']").val($(".inscritos-detalle").attr('permitidos'));
-        }
+
+        //checkeamos el switch segun corresponda
+        if ($("#titulo-detalle").attr('siguiente') == '1') 
+            $('input.siguiente_switch').prop('checked', true);
+        else 
+            $('input.siguiente_switch').prop('checked', false);
+        
+        //ocultamos botones del formulario segun corresponda
         $("button.crear_curso").hide();
         $("button.guardar_cambios").show();
     });
-    $('.guardar_cambios').click(function() {
-        if ($('input.usu_permitidos_switch').prop('checked') == true) var usuarios_permitidos = 'true';
-        else var usuarios_permitidos = $("input[name='cant_usuarios']").val();
+
+
+    $('.guardar_cambios').click(function () {
         $.ajax({
             method: "POST",
-            url: "/kren/controladores.php",
+            url: "../controladores.php",
             data: {
                 axn: "actualizar_curso",
                 id_curso: id_curso_en_detalle,
                 nombre_curso: $("input[name='nombre_curso']").val(),
                 ponente: $("input[name='ponente']").val(),
-                fecha: $("input[name='fecha']").val(),
-                hora: $("input[name='hora']").val(),
+                siguiente: $(".siguiente_switch").prop('checked'),
                 descripcion: $('.des_form').val(),
-                usuarios_permitidos: usuarios_permitidos
             }
-        }).done(function(data) {
+        }).done(function (data) {
             if (JSON.parse(data) == true) {
                 //actualizamos listado
                 $("li[id_curso=" + id_curso_en_detalle + "] div.nombre_curso").text($("input[name='nombre_curso']").val());
@@ -369,65 +500,66 @@ $(document).ready(function() {
             }
         })
     });
-    $(".btn_lista_empleados").click(function() {
+    $(".btn_lista_empleados").click(function () {
         $('input.barra-busqueda').attr('placeholder', 'Buscar empleado ó area');
         listado_empleados();
     });
-    $(".btn_lista_cursos").click(function() {
+    $(".btn_lista_cursos").click(function () {
         $('input.barra-busqueda').attr('placeholder', 'Buscar curso ó ponente')
         listado_cursos();
     });
-    $("input.barra-busqueda").keyup(function() {
+    $("input.barra-busqueda").keyup(function () {
         filtrar_listado();
     });
-    $("#VincularRFID").on("click", function() {
-        console.log("click");
+    $("#VincularRFID").on("click", function () {
+
         $.ajax({
             method: "POST",
-            data: {axn: "traer_estado"},
-            url: "/kren/controladores.php",
+            data: { axn: "traer_estado" },
+            url: "../controladores.php",
             dataType: 'json'
-        }).done(function(validar) {
-            console.log(validar.boton);
-            if(validar.boton == 0){
+        }).done(function (validar) {
+
+            if (validar.boton == 0) {
                 $("#msjRfid").hide();
                 $("#esperaTag").show();
                 $.ajax({
                     method: "POST",
-                    url: "/kren/controladores.php",
+                    url: "../controladores.php",
                     data: {
                         axn: "traer_id_rfid",
                     },
-                    dataType : 'text'
-                }).done(function(data) {
+                    dataType: 'text'
+                }).done(function (data) {
                     var id = data.trim();
-                    $("#VincularRFID").attr("RFID",id)
+                    $("#VincularRFID").attr("RFID", id)
                     $("#VincularRFID").removeClass("btn-danger");
                     $("#VincularRFID").removeClass("btn-warning");
                     $("#VincularRFID").addClass("btn-success");
-                    $.notify("Se agrego el ID: "+id, "success");
+                    $.notify("Se agrego el ID: " + id, "success");
                     $("#esperaTag").hide();
                     $("#msjRfid").show();
                 })
-           }else{
+            } else {
                 $("#VincularRFID").removeClass("btn-warning");
                 $("#VincularRFID").addClass("btn-danger");
                 $.notify("RFID ya en uso", "warn");
             }
         })
-      
+
     });
 
     var tiempoReal = "";
-    $(".mostrarTiempoReal").on("click", function(){
+    $(".mostrarTiempoReal").on("click", function () {
         $("#label-actividad-act").show();
         $(".ocultarTiempoReal").show();
         $(".mostrarTiempoReal").hide();
         //Inciamos la actualizacion, cada segundo
-        tiempoReal = setInterval(tiempo_real, 500);
+        tiempoReal = setInterval(function () { tiempo_real(); }, 500);
+
     });
 
-    $(".ocultarTiempoReal").on("click", function(){
+    $(".ocultarTiempoReal").on("click", function () {
         $("#label-actividad-act").hide();
         $(".ocultarTiempoReal").hide();
         $(".mostrarTiempoReal").show();
@@ -435,20 +567,23 @@ $(document).ready(function() {
         clearInterval(tiempoReal);
         $.ajax({
             method: "POST",
-            url: "/kren/controladores.php",
+            url: "../controladores.php",
             data: {
                 axn: "borrar_Act_Act",
             }
-        }).done(function(data) {
+        }).done(function (data) {
 
         })
 
     });
 
 
-    $(".cerrar_sesion").on("click", function(){
-        $.post( 'csesion.php', function( data ) {if(data!='')location.reload();});
+    $(".cerrar_sesion").on("click", function () {
+        $.post('csesion.php', function (data) { if (data != '') location.reload(); });
     });
+
+
+
 
     /*$(".iniciar_curso").on("click", function(){
         var id_curso = $(this).attr("id_curso");
@@ -457,4 +592,272 @@ $(document).ready(function() {
     });*/
 
 
+
+    /*--------------------------------------------------------------------SCRIPT NEWS-------------------------------------------------------------*/
+
+
+    //genera el datatable
+    function generar_datatable() {
+        table = $('#example').DataTable({
+            lengthMenu: [25],
+            scrollY: "59vh",
+            scrollX: true,
+            scrollCollapse: true,
+            paging: true,
+            fixedHeader: true,
+            fixedColumns: {
+                left: 1,
+                right: 1
+            },
+            language: {
+                "decimal": "",
+                "emptyTable": "<i class='fas fa-users-slash'></i> Este curso aun no tiene asistencias",
+                "info": " &nbsp; _TOTAL_ Asistencias",
+                "infoEmpty": " &nbsp; 0 Coincidencias",
+                "infoFiltered": "(Filtrado de _MAX_ asistencias totales)",
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": "<button class='button is-primary boton-volver-asistencias ocultar-asistencias controles_datatable control_iz_datatable'><i class='fas fa-arrow-left'></i>&nbsp;&nbsp;Volver</button>",
+                "loadingRecords": "Cargando...",
+                "processing": "Procesando...",
+                "search": "",
+                "zeroRecords": "Sin resultados encontrados",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Ultimo",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                }
+            }
+        });
+
+        $(".dataTables_filter input").attr('placeholder', 'Buscar');
+        $(".dataTables_filter input").addClass('input is-primary');
+    }
+
+    //cambia color del li seleccionado
+    function fun__estilos_li_seleccionado() {
+
+        $('li.list-group-item').click(function () {
+            if ($('#example_wrapper').css('display') != 'none') {
+                $('li.lista_seleccionado').removeClass('lista_seleccionado');
+                $(this).addClass('lista_seleccionado');
+            }
+        });
+    }
+
+    //oculta el datatable
+    function fun_volver_datatable() {
+        $(".ocultar-asistencias").click(function () {
+            //esconde asistencias
+            $('#example_wrapper').addClass('animate__animated animate__backOutRight');
+            setTimeout(
+                function () {
+                    //resetear elementos
+                    $('#example_wrapper').hide();
+                    $('#example_wrapper').removeClass('animate__backOutRight');
+
+                    //muestra apartado agregar curso y empleado
+                    $('#agregar-curso').show();
+                    $('#agregar-curso').addClass('animate__backInRight');
+                    setTimeout(
+                        function () {
+                            //resetear elementos
+                            $('#agregar-curso').removeClass('animate__backInRight');
+                        }, 1000);
+
+                    //muestra actividad actual
+                    $('#actividad-actual').show();
+                    $('#actividad-actual').addClass('animate__backInRight');
+                    setTimeout(
+                        function () {
+                            //resetear elementos
+                            $('#actividad-actual').removeClass('animate__backInRight');
+                        }, 1000);
+                }, 400);
+            $('.lista_cursos li').removeClass('cursor');
+            $('li.lista_seleccionado').removeClass('lista_seleccionado');
+        });
+    }
+
+    //selecciona un li
+    function fun_seleccionar_li(id_curso_a_actualizar) {
+        $('.lista_cursos li').removeClass('lista_seleccionado');
+        $('.lista_cursos li').removeClass('cursor');
+
+        setTimeout(function () {
+            $('.lista_cursos li[id_curso=' + id_curso_a_actualizar + ']').addClass('lista_seleccionado');
+            $('.lista_cursos li').addClass('cursor');
+            $('.cursor').click(function () {
+                let id = $(this).attr("id_curso");
+                mostrar_curso_detalle(id);
+
+                if ($('#example_wrapper').css('display') == 'block')//solo si esta mostrado el listado de asistencias
+                {
+                    actualizar_datatable($(this).attr('id_curso'));
+                }
+            });
+        }, 100)
+
+    }
+
+
+    //-------------------------------------------------------------------Animaciones--------------------------------------------------------------*/
+
+    //realiza un focus para el usuario (con animacion)
+    function shake(selector) {
+        $(selector).addClass('animate__headShake');
+        setTimeout(function () {
+            $(selector).removeClass('animate__headShake');
+        }, 700);
+    }
+
+    //muestra el datatable (con animacion)
+    function bounce_inright_datatable() {
+        $('#example').show();
+        $('#example_wrapper').show();
+        $('#cont-d').addClass('animate__animated animate__bounceInRight');
+        $('#cont-d').show();
+
+        setTimeout(function () {
+
+            $('#cont-d').removeClass('animate__animated animate__bounceInRight');
+        }, 800);
+    }
+
+    //oculta elementos hacia la derecha
+    function backoutright(selector) {
+        $(selector).addClass('animate__backOutRight');
+        setTimeout(
+            function () {
+                //resetear elemento
+                $(selector).hide();
+                $(selector).removeClass('animate__backOutRight');
+            }, 400
+        );
+    }
+    //muestra elementos con animacion desde la derecha
+    function backinright(selector) {
+        $(selector).show();
+        $(selector).addClass('animate__backInRight retardo_formularios');
+        setTimeout(
+            function () {
+                //resetear elemento
+                $(selector).removeClass('animate__backInRight retardo_formularios');
+            }, 300
+        );
+    }
+
+    function bouncein(selector){
+        $(selector).addClass('animate__bounceIn');
+        setTimeout(
+            function () {
+                //resetear elemento
+                $(selector).removeClass('animate__bounceIn');
+            }, 800
+        );
+    }
+
+
+
+
+    let esta=0;
+    //optimizada
+    //llena del datatable
+    function llenado_datatable(id_curso_a_mostrar) {
+        $.ajax({
+            method: "POST",
+            url: "../controladores.php",
+            data: {
+                axn: "asistencias",
+                id_curso: id_curso_a_mostrar
+            }
+        }).done(function (data) {
+            //estoy comprando cuando el curso falla por que no tiene registros
+            
+            id_curso_en_datatable = id_curso_a_mostrar;
+            let i = 0;
+            while (i < JSON.parse(data).length) {
+                if(JSON.parse(data)!='ERROR')
+                $("table#example tbody").append('<tr><td>' + JSON.parse(data)[i + 1] + '</td><td>' + JSON.parse(data)[i + 2] + '</td><td>' + JSON.parse(data)[i + 3] + '</td><td>' + JSON.parse(data)[i + 4] + '</td></tr>');
+
+                i = i + 5;
+
+                //si ya se termino de rellenar el datatable
+                if (i == JSON.parse(data).length) {
+                    //si no existe un datatable actualmente
+                    if ($('#example_wrapper').length == 0) {
+                        //genera el datatable
+                        generar_datatable();
+                        //declara la funcion que cambia los estilos del li cuando es clickeado
+                        fun__estilos_li_seleccionado();
+                        //mostrar datatable con animacion
+                        bounce_inright_datatable();
+                        //declara la funcion para el boton volver
+                        fun_volver_datatable();
+                        //selecciona el li correspondiente
+                        fun_seleccionar_li(id_curso_a_mostrar);
+
+                    } else {
+                        //mostrar datatable con animacion
+                        bounce_inright_datatable();
+                    }
+                    $('.lista_cursos li').removeClass('cursor');
+                }
+            }
+        });
+    }
+
+
+    //optimizada
+    //click para boton asistencias
+    $("#listado_asistencias").click(function () {
+        //esconder elementos
+        backoutright('#agregar-curso');
+        backoutright('#actividad-actual');
+        //despues de la animacion llamamos a la funcion que mostrara datatable
+        setTimeout(function () {
+            listado_asistencias(id_curso_en_detalle);
+        }, 400);
+    });
+
+    //optimizada
+    function actualizar_datatable(id_curso_a_actualizar) {
+        if (id_curso_a_actualizar != id_curso_en_datatable) {
+            if (table.destroy()) {
+                //vaciamos y escondemos datatable
+                $("#example tbody").html('');
+                $("#example").hide();
+                $(".lista_cursos li").removeClass('cursor');
+
+                //rellenamos datatable y lo mostramos
+                llenado_datatable(id_curso_a_actualizar);
+            }
+        } else {
+            shake('#example_wrapper');
+        }
+    }
+
+
+    //optimizada
+    function listado_asistencias(id_curso) {
+        //comparamos que no sean iguales los dos cursos (el que se selecciono o el del datatable)
+        if (id_curso_en_datatable != id_curso) {
+            //rellenamos datatable y lo mostramos
+            llenado_datatable(id_curso);
+        } else {
+            if ($('#example_wrapper').css('display') == 'block') {
+                //realizamos un focus al datatable para el usuario
+                shake('#example_wrapper');
+            } else {
+                fun_seleccionar_li(id_curso_en_datatable)
+                bounce_inright_datatable();
+            }
+        }
+    }
+
+
+
+
+    $('table').hide();
 }); //fin document-ready

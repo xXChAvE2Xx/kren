@@ -11,7 +11,7 @@ $( document ).ready(function() {
             setTimeout(function(){  $(".animate__animated").removeClass("animate__swing"); }, 600);
             return false;
         }
-
+ 
          
              $.ajax({
             method: "POST",
@@ -27,7 +27,7 @@ $( document ).ready(function() {
                     $(".avs").hide();
                     $('.pass_inv').show();
                 }else{
-                    window.location="../kren/index.php";
+                    window.location="../index.php";
                 }
             })
         
