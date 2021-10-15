@@ -19,7 +19,7 @@ $(document).ready(function () {
         if (id_curso_en_detalle == id_curso) return false;
         $.ajax({
             method: "POST",
-            url: "../controladores.php",
+            url: "controladores.php",
             data: {
                 axn: "mostrar_curso_detalle",
                 id_curso: id_curso
@@ -83,21 +83,32 @@ $(document).ready(function () {
         //carga listado de cursos
         $.ajax({
             method: "POST",
-            url: "../controladores.php",
+            url: "controladores.php",
             data: {
                 axn: "listado_cursos"
             }
         }).done(function (data) {
             //mostramos el primer curso en detalle
-            mostrar_curso_detalle(JSON.parse(data)[1]);
-            id_curso_en_detalle = JSON.parse(data)[1];
-            for (var i = 1; JSON.parse(data)[i] != null; i = i + 3) {
+            //if(JSON.parse(data)[i+3] == 1){
+                mostrar_curso_detalle(JSON.parse(data)[1]);
+                id_curso_en_detalle = JSON.parse(data)[1];
+            //}
+            for (var i = 1; JSON.parse(data)[i] != null; i = i + 4) {
                 //comprueba que no exista el elemento actual
                 if ($("li[id_curso=" + JSON.parse(data)[i] + "]").text() == '') {
-                    $(".list-group").append('<li id_curso="' + JSON.parse(data)[i] + '" class="list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto"><div class="fw-bold nombre_curso" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 1] + '</div>Ponente: <span class="ponente" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 2] + '</span></div> <span class="badge rounded-pill ver-curso" title="Ver el detalle de este curso" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-eye"></i></span><span class="badge rounded-pill" title="Comenzar este curso" id_curso=""><i class="fas fa-play"></i></span></li');
-                    $(".iniciar_curso").attr("id_curso", id_curso_en_detalle);
+
+                    if(JSON.parse(data)[i+3] == 1){
+                        $(".list-group").append('<li id_curso="' + JSON.parse(data)[i] + '" agendado="'+JSON.parse(data)[i+3]+'" class="agendado list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto"><div class="fw-bold nombre_curso" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 1] + '</div>Ponente: <span class="ponente" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 2] + '</span></div> <span class="badge rounded-pill ver-curso" title="Ver el detalle de este curso" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-eye"></i></span><span class="badge rounded-pill agendar_curso" title="Comenzar este curso" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-play"></i></span></li');
+                    }else{
+                        $(".list-group").append('<li id_curso="' + JSON.parse(data)[i] + '" agendado="'+JSON.parse(data)[i+3]+'" class="list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto"><div class="fw-bold nombre_curso" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 1] + '</div>Ponente: <span class="ponente" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 2] + '</span></div> <span class="badge rounded-pill ver-curso" title="Ver el detalle de este curso" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-eye"></i></span><span class="badge rounded-pill agendar_curso" title="Comenzar este curso" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-play"></i></span></li');
+                        $(".iniciar_curso").attr("id_curso", id_curso_en_detalle);
+                    }
                 }
+                
             }
+
+            $(".ver-curso[agendado=1]").click()
+
             $(".ver-curso").click(function () {
 
                 if ($("#form-agregar-curso").css('display') != 'none' || $("#form-agregar-empleado").css('display') != 'none')
@@ -113,6 +124,38 @@ $(document).ready(function () {
                     shake('#curso-detalle');
                 }
             });
+
+
+            $(".agendar_curso").on("click", function(){
+                var idcurso = $(this).attr("id_curso")
+                $.ajax({
+                    method: "POST",
+                    data: { axn: "traer_estado" },
+                    url: "controladores.php",
+                    dataType: 'json'
+                }).done(function (validar) {
+                    if (validar.boton == 0) {
+                        $('.agendado').removeClass('agendado');
+                        $("li[id_curso="+idcurso+"]").addClass('agendado');
+                        $(".ver-curso[id_curso="+idcurso+"]").click()
+                        //agendar el curso, para iniciar 
+                        $.ajax({
+                            method: "POST",
+                            url: "controladores.php",
+                            data: {
+                                axn: "agendar_curso", 
+                                id_curso: idcurso
+                            }
+                        }).done(function (data) {
+                            
+                        });
+                    } else {
+                        $.notify("Un curso está iniciado, por favor deténgalo y presione de nuevo.", "warn");
+                    }
+                });
+                
+            });
+    
         })
     }
     //listado los empleados
@@ -124,7 +167,7 @@ $(document).ready(function () {
         //carga listado de cursos
         $.ajax({
             method: "POST",
-            url: "../controladores.php",
+            url: "controladores.php",
             data: {
                 axn: "listado_empleados"
             }
@@ -151,7 +194,7 @@ $(document).ready(function () {
     function crear_curso() {
         $.ajax({
             method: "POST",
-            url: "../controladores.php",
+            url: "controladores.php",
             data: {
                 axn: "crear_curso",
                 nombre: $("input[name='nombre_curso']").val(),
@@ -178,7 +221,7 @@ $(document).ready(function () {
     function agregar_empleado() {
         $.ajax({
             method: "POST",
-            url: "../controladores.php",
+            url: "controladores.php",
             data: {
                 axn: "agregar_empleado",
                 nombre: $("input[name='nombre_empleado']").val(),
@@ -243,7 +286,7 @@ $(document).ready(function () {
     function tiempo_real() {
         $.ajax({
             method: "POST",
-            url: "../controladores.php",
+            url: "controladores.php",
             data: { axn: 'actualizar_Entradas' },
             dataType: 'text'
         }).done(function (data) {
@@ -368,7 +411,7 @@ $(document).ready(function () {
         $(".modal").css('display', 'none');
         $.ajax({
             method: "POST",
-            url: "../controladores.php",
+            url: "controladores.php",
             data: {
                 axn: "borrar_curso",
                 id_curso: id_curso_en_detalle
@@ -469,7 +512,7 @@ $(document).ready(function () {
     $('.guardar_cambios').click(function () {
         $.ajax({
             method: "POST",
-            url: "../controladores.php",
+            url: "controladores.php",
             data: {
                 axn: "actualizar_curso",
                 id_curso: id_curso_en_detalle,
@@ -511,12 +554,13 @@ $(document).ready(function () {
     $("input.barra-busqueda").keyup(function () {
         filtrar_listado();
     });
+
     $("#VincularRFID").on("click", function () {
 
         $.ajax({
             method: "POST",
             data: { axn: "traer_estado" },
-            url: "../controladores.php",
+            url: "controladores.php",
             dataType: 'json'
         }).done(function (validar) {
 
@@ -525,7 +569,7 @@ $(document).ready(function () {
                 $("#esperaTag").show();
                 $.ajax({
                     method: "POST",
-                    url: "../controladores.php",
+                    url: "controladores.php",
                     data: {
                         axn: "traer_id_rfid",
                     },
@@ -567,7 +611,7 @@ $(document).ready(function () {
         clearInterval(tiempoReal);
         $.ajax({
             method: "POST",
-            url: "../controladores.php",
+            url: "controladores.php",
             data: {
                 axn: "borrar_Act_Act",
             }
@@ -581,17 +625,6 @@ $(document).ready(function () {
     $(".cerrar_sesion").on("click", function () {
         $.post('csesion.php', function (data) { if (data != '') location.reload(); });
     });
-
-
-
-
-    /*$(".iniciar_curso").on("click", function(){
-        var id_curso = $(this).attr("id_curso");
-        console.log(id_curso);
-
-    });*/
-
-
 
     /*--------------------------------------------------------------------SCRIPT NEWS-------------------------------------------------------------*/
 
@@ -767,7 +800,7 @@ $(document).ready(function () {
     function llenado_datatable(id_curso_a_mostrar) {
         $.ajax({
             method: "POST",
-            url: "../controladores.php",
+            url: "controladores.php",
             data: {
                 axn: "asistencias",
                 id_curso: id_curso_a_mostrar
@@ -855,9 +888,5 @@ $(document).ready(function () {
             }
         }
     }
-
-
-
-
     $('table').hide();
 }); //fin document-ready

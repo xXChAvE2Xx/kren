@@ -29,10 +29,10 @@
 
   <script src="lib/jQuery/jquery-3.6.0.min.js"></script><!--jquery-->
 
-  <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet"></link><!--datatables css-->
-  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js" ></script><!--datatables js-->
-  <script src="https://cdn.datatables.net/fixedcolumns/4.0.0/js/dataTables.fixedColumns.min.js" ></script><!--datatables js-->
-  <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.0.0/css/fixedColumns.dataTables.min.css" ><!--datatables css-->
+  <link href="lib/datatable/css/jquery.dataTables.min.css" rel="stylesheet"></link><!--datatables css-->
+  <script src="lib/datatable/js/jquery.dataTables.min.js" ></script><!--datatables js-->
+  <script src="lib/datatable/fixedcolumns/js/fixedColumns.dataTables.min.js" ></script><!--datatables js-->
+  <link rel="stylesheet" href="lib/datatable/fixedcolumns/css/fixedColumns.dataTables.min.css" ><!--datatables css-->
 
   <link rel="stylesheet" href="lib/bulma/bulma.min.css"><!--Bulma-->
 

@@ -243,6 +243,11 @@
     color: #ffc107;
   }
 
+  .agendado{
+    background-color: #30a605b5 !important;
+    color: #fff;
+  }
+
   .cursor:hover{
     background-color:#88898a4f;
     cursor: pointer;
