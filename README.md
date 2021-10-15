@@ -1,1 +1,4 @@
 # kren
+
+En las empresas se realizan cursos obligatorios a todo el personal. Las empresas necesitan llevar el control de todos sus empleados que asisten a las capacitaciones, una forma de hacerlo es anotando el nombre de cada persona que entra en un formulario, tomando asistencia antes o al finalizar el curso, esto ocasiona que exista un gran número de personas haciendo fila para la toma de asistencia. 
+Un problema presentado por los encargados del curso, son las constancias de finalización del curso a todo el personal que asistió. Los encargados invierten mucho tiempo analizando los registros para saber quién asistió la mayoría de los días en los que se impartió el curso. Cabe mencionar que, estos problemas se presentaban en una empresa llamada Hylsa, la cual por medio de un alumno que realizaba sus prácticas profesionales, contactó a un profesor para que el dispositivo se desarrollara.
