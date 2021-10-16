@@ -10,7 +10,7 @@
 	{
 		case 'listado_cursos':
 
-			$sql = "SELECT id_curso, nombre_curso, nombre_ponente, siguiente FROM Cursos;";
+			$sql = "SELECT id_curso, nombre_curso, nombre_ponente, siguiente FROM cursos;";
 			$result = $conn->query($sql);	
 			$i=1;
 
@@ -35,7 +35,7 @@
 
 		case 'listado_empleados':
 
-			$sql = "SELECT id_empleado, nombre_empleado, area FROM Empleados;";
+			$sql = "SELECT id_empleado, nombre_empleado, area FROM empleados;";
 			$result = $conn->query($sql);	
 			$i=1;
 
@@ -60,7 +60,7 @@
 		case 'mostrar_curso_detalle':
 
 			$id_curso = $_POST['id_curso'];
-			$sql = "SELECT descripcion, fecha_hora_inicio, fecha_hora_fin, siguiente FROM Cursos WHERE id_curso = ".$id_curso.";";
+			$sql = "SELECT descripcion, fecha_hora_inicio, fecha_hora_fin, siguiente FROM cursos WHERE id_curso = ".$id_curso.";";
 			$result = $conn->query($sql);	
 
 			if ($result->num_rows > 0)
@@ -78,7 +78,7 @@
 
 		case 'borrar_curso':
 			$id_curso = $_POST['id_curso'];
-			$sql = "DELETE FROM Cursos WHERE id_curso = ".$id_curso.";";
+			$sql = "DELETE FROM cursos WHERE id_curso = ".$id_curso.";";
 			$result = $conn->query($sql);	
 		    echo json_encode($result);
 		break;
@@ -91,13 +91,13 @@
 
 			if($siguiente=='true')
 			{
-				$sql="UPDATE Cursos SET  siguiente = '0' WHERE siguiente = '1';";
+				$sql="UPDATE cursos SET  siguiente = '0' WHERE siguiente = '1';";
 				$result = $conn->query($sql);
 
-				$sql = "INSERT INTO Cursos (nombre_curso, nombre_ponente, descripcion, siguiente) VALUES ('$nombre','$ponente','$descripcion','1');";
+				$sql = "INSERT INTO cursos (nombre_curso, nombre_ponente, descripcion, siguiente) VALUES ('$nombre','$ponente','$descripcion','1');";
 				$result = $conn->query($sql);
 			}else{
-				$sql = "INSERT INTO Cursos (nombre_curso, nombre_ponente, descripcion, siguiente) VALUES ('$nombre','$ponente','$descripcion','0');";
+				$sql = "INSERT INTO cursos (nombre_curso, nombre_ponente, descripcion, siguiente) VALUES ('$nombre','$ponente','$descripcion','0');";
 				$result = $conn->query($sql);
 			}
 
@@ -113,13 +113,13 @@
 				if($siguiente == 'true')
 				{
 					$siguiente = 1;
-					$sql="UPDATE Cursos SET  siguiente = '0' WHERE siguiente = '1';";
+					$sql="UPDATE cursos SET  siguiente = '0' WHERE siguiente = '1';";
 					$result = $conn->query($sql);
 				}
 				else
 					$siguiente = 0;
 
-			   $sql="UPDATE Cursos SET nombre_curso = '$nombre_curso', nombre_ponente= '$ponente', descripcion = '$descripcion', siguiente = '$siguiente' WHERE id_curso = ".$id_curso.";";
+			   $sql="UPDATE cursos SET nombre_curso = '$nombre_curso', nombre_ponente= '$ponente', descripcion = '$descripcion', siguiente = '$siguiente' WHERE id_curso = ".$id_curso.";";
 		       $result = $conn->query($sql);	
 		    echo json_encode($result);
 		break;
@@ -134,7 +134,7 @@
 		    $rfid = $_POST['id_RFID'];
 		    $edad = date('Y')-substr($fecha_nacimiento, 0, -6);
 		    
-		    $valid="SELECT RFID_ID, nombre_empleado FROM Empleados WHERE RFID_ID =".$rfid.";";
+		    $valid="SELECT RFID_ID, nombre_empleado FROM empleados WHERE RFID_ID =".$rfid.";";
 
 		    $validacion = $conn->query($valid);
 
@@ -143,7 +143,7 @@
 		    }
 		    else{
 
-		    	$sql="INSERT INTO Empleados (id_curso, nombre_empleado, Edad, Telefono, Fecha_Nac, correo, domicilio, area, RFID_ID) VALUES (NULL, '$nombre_empleado','$edad','$telefono','$fecha_nacimiento','$correo','$domicilio','$area_departamento', '$rfid');";
+		    	$sql="INSERT INTO empleados (id_curso, nombre_empleado, Edad, Telefono, Fecha_Nac, correo, domicilio, area, RFID_ID) VALUES (NULL, '$nombre_empleado','$edad','$telefono','$fecha_nacimiento','$correo','$domicilio','$area_departamento', '$rfid');";
 			    $result = $conn->query($sql);
 			    echo json_encode($result); 
 		    }
@@ -177,7 +177,7 @@
 		
 		case 'comprobar_correo':
 			$correo = $_POST['correo'];
-			$sql = "SELECT id_administrador FROM Administrador WHERE correo='$correo';";
+			$sql = "SELECT id_administrador FROM administrador WHERE correo='$correo';";
 			$result = $conn->query($sql);	
 			if ($result->num_rows > 0)
 				echo 'true';
@@ -188,7 +188,7 @@
 		case 'login':
 			$correo = $_POST['correo'];
 			$password = $_POST['password'];
-			$sql = "SELECT nombre FROM Administrador WHERE correo='$correo' AND password ='$password';";
+			$sql = "SELECT nombre FROM administrador WHERE correo='$correo' AND password ='$password';";
 			$result = $conn->query($sql);	
 			if ($result->num_rows > 0)
 			{
@@ -227,7 +227,7 @@
 		break;
 
 		case 'borrar_Act_Act':
-			$sql = "DELETE FROM Act_Act;";
+			$sql = "DELETE FROM act_act;";
 			$result = $conn->query($sql);
 			echo $result;
 		break;
@@ -235,7 +235,7 @@
 			$id_curso = $_POST['id_curso'];;
 			$i=0;
 			$asistencias[]=0;
-			$sql = "SELECT Empleados.id_empleado, Empleados.nombre_empleado, Empleados.area, RFID.entrada, RFID.salida FROM rfid INNER JOIN Empleados ON RFID.id_empleado = Empleados.id_empleado WHERE RFID.id_curso = '$id_curso';";
+			$sql = "SELECT empleados.id_empleado, empleados.nombre_empleado, empleados.area, rfid.entrada, rfid.salida FROM rfid INNER JOIN empleados ON rfid.id_empleado = empleados.id_empleado WHERE rfid.id_curso = '$id_curso';";
 			//$sql = "select * from rfid;";
 			$result = $conn->query($sql);	
 			if ($result->num_rows > 0)
@@ -260,7 +260,7 @@
 		case 'agendar_curso':
 			$id_curso = $_POST['id_curso'];
 
-			$sql="UPDATE Cursos SET  siguiente = '0' WHERE siguiente = '1';";
+			$sql="UPDATE cursos SET  siguiente = '0' WHERE siguiente = '1';";
 			$result = $conn->query($sql);
 
 			$agendar_curso="UPDATE Cursos SET  siguiente = '1' WHERE id_curso=".$id_curso.";";
