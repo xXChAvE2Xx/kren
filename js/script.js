@@ -233,31 +233,22 @@ $(document).ready(function () {
                 id_RFID: $("#VincularRFID").attr("RFID")
             }
         }).done(function (data) {
-            var data = data.trim();
+            var datas = data.trim();
+            if (datas == "true") {
+                $("#form-agregar-empleado input").val('');
 
-            if (data == "true") {
-                if (data != 0) {
-                    $("#form-agregar-empleado input").val('');
-
-                    $("#VincularRFID").removeAttr("RFID")
-                    $("#VincularRFID").removeClass("btn-success");
-                    $("#VincularRFID").addClass("btn-warning");
-                    $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Empleado agregado con exito");
-                    $(".modal-exito").show();
-                } else {
-                    $(".modal-exito .title").html("<i class='fas fa-times'></i> Error: RFID utilizado por otro usuario");
-                    $(".modal-exito").show();
-                    $("#VincularRFID").removeClass("btn-success");
-                    $("#VincularRFID").addClass("btn-warning");
-                    $("#VincularRFID").removeAttr("rfid");
-                }
+                $("#VincularRFID").removeAttr("RFID")
+                $("#VincularRFID").removeClass("btn-success");
+                $("#VincularRFID").addClass("btn-warning");
+                $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Empleado agregado con exito");
+                $(".modal-exito").show();
+                estado_lista = '';
+                listado_empleados();
             } else {
                 $(".modal-exito .title").html("<i class='fas fa-times'></i> Error al agregar el empleado");
                 $(".modal-exito").show();
             }
-            estado_lista = '';
-            listado_empleados();
-        })
+        })   
     }
 
     function filtrar_listado() {
@@ -573,21 +564,32 @@ $(document).ready(function () {
                     data: {
                         axn: "traer_id_rfid",
                     },
-                    dataType: 'text'
+                    dataType: 'json'
                 }).done(function (data) {
-                    var id = data.trim();
-                    $("#VincularRFID").attr("RFID", id)
-                    $("#VincularRFID").removeClass("btn-danger");
-                    $("#VincularRFID").removeClass("btn-warning");
-                    $("#VincularRFID").addClass("btn-success");
-                    $.notify("Se agrego el ID: " + id, "success");
-                    $("#esperaTag").hide();
-                    $("#msjRfid").show();
+                    var id = data.id.trim();
+                    if(data.estado == true){
+                        $("#VincularRFID").attr("RFID", id)
+                        $("#VincularRFID").removeClass("btn-danger");
+                        $("#VincularRFID").removeClass("btn-warning");
+                        $("#VincularRFID").addClass("btn-success");
+                        $.notify("Se agrego el ID: " + id, "success");
+                        $("#esperaTag").hide();
+                        $("#msjRfid").show();
+                        $(".agregar_empleado").prop('disabled', false);
+                    }else{
+                        $("#VincularRFID").removeClass("btn-danger");
+                        $("#VincularRFID").addClass("btn-danger");
+                        $.notify("Tag RFID en uso por otro usuario", "warn");
+                        $("#esperaTag").hide();
+                        $("#msjRfid").show();
+                        $(".agregar_empleado").prop('disabled', true);
+                        
+                    }
                 })
             } else {
                 $("#VincularRFID").removeClass("btn-warning");
                 $("#VincularRFID").addClass("btn-danger");
-                $.notify("RFID ya en uso", "warn");
+                $.notify("Lector RFID en uso", "warn");
             }
         })
 
