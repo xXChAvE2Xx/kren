@@ -20,7 +20,7 @@
   <link rel="shortcut icon" href="img/favicon.ico">
 
   <link href="lib/fontawesome/css/all.min.css" rel="stylesheet"><!--Fontawesome css-->
-  <script href="lib/fontawesome/js/all.min.js" type="text/javascript"></script><!--Fontawesome js-->
+  <script href="lib/fontawesome/js/all.min.js" type="text/javascript"></script><!--Fontawesome js h-->
 
   <link rel="stylesheet" href="css/animate.min.css"/><!--Animate.css-->
 
