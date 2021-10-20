@@ -837,12 +837,36 @@ $(document).ready(function () {
                     if ($('#example_wrapper').length == 0) {
                         //descargar asistencias
                         $(".btn_download_constancia").on('click',function(){
-                            console.log('IMPRESION DE DATOS PARA LA CONTANCIA:')
+
+                            var nombre = $(this).parent().prev().prev().prev().prev().text();
+                            var nom_curso = $('div.nombre_curso[id_curso='+id_curso_en_datatable+']').text();
+                            var entrada = $(this).parent().prev().prev().text();
+                            var salida = $(this).parent().prev().text();
+                            var area  = $(this).parent().prev().prev().prev().text();
+                            window.open("constancia.php?nombre="+nombre+"&entrada="+entrada+"&nom_curso="+nom_curso+"&salida="+salida+"&area="+area, 'Constancia de '+nombre, 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=200,left = 390,top = 50');
+
+                            /*$.ajax({
+                                type: "POST",
+                                url: "constancia.php",
+                                data: {
+                                    
+                                },
+                                dataType: "text",
+                                success: function (response) {
+                                   console.log("Se esta descargando el pdf"); 
+                                },
+                                error: function (jqXHR, textStatus, errorThrown){
+                                    console.log(textStatus);
+
+                                }
+                            });*/
+
+                            /*console.log('IMPRESION DE DATOS PARA LA CONTANCIA:')
                             console.log('Nombre: '+$(this).parent().prev().prev().prev().text());
                             console.log('Area: '+$(this).parent().prev().prev().prev().prev().text());
                             console.log('Entrada: '+$(this).parent().prev().prev().text());
                             console.log('Salida: '+$(this).parent().prev().text());
-                            console.log($('div.nombre_curso[id_curso='+id_curso_en_datatable+']').text());
+                            console.log($('div.nombre_curso[id_curso='+id_curso_en_datatable+']').text());*/
                         });
                         //genera el datatable
                         generar_datatable();
