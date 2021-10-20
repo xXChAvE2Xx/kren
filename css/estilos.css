@@ -39,6 +39,10 @@
         margin-left: 20%;
     }
     
+    .btn_download_constancia{
+      height: 12px;
+      margin-left: 20%;
+    }
    
     @media only screen and (max-width : 1130px)
     {

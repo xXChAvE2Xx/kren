@@ -219,6 +219,7 @@
                   <th>Area</th>
                   <th>Entrada</th>
                   <th>Salida</th>
+                  <th>Constancias</th>
               </tr>
           </thead>
           <tbody>

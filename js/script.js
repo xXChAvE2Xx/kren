@@ -94,18 +94,28 @@ $(document).ready(function () {
                 id_curso_en_detalle = JSON.parse(data)[1];
             //}
             for (var i = 1; JSON.parse(data)[i] != null; i = i + 4) {
+                
                 //comprueba que no exista el elemento actual
                 if ($("li[id_curso=" + JSON.parse(data)[i] + "]").text() == '') {
 
                     if(JSON.parse(data)[i+3] == 1){
-                        $(".list-group").append('<li id_curso="' + JSON.parse(data)[i] + '" agendado="'+JSON.parse(data)[i+3]+'" class="agendado list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto"><div class="fw-bold nombre_curso" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 1] + '</div>Ponente: <span class="ponente" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 2] + '</span></div> <span class="badge rounded-pill ver-curso" title="Ver el detalle de este curso" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-eye"></i></span><span class="badge rounded-pill agendar_curso" title="Comenzar este curso" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-play"></i></span></li');
+                        $(".list-group").append('<li id_curso="' + JSON.parse(data)[i] + '" agendado="'+JSON.parse(data)[i+3]+'" class="agendado list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto"><div class="fw-bold nombre_curso" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 1] + '</div>Ponente: <span class="ponente" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 2] + '</span></div><span class="badge rounded-pill ver-curso" title="Ver el detalle de este curso" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-eye"></i></span><span class="badge rounded-pill agendar_curso" title="Comenzar este curso" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-play"></i></span></li');
                     }else{
-                        $(".list-group").append('<li id_curso="' + JSON.parse(data)[i] + '" agendado="'+JSON.parse(data)[i+3]+'" class="list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto"><div class="fw-bold nombre_curso" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 1] + '</div>Ponente: <span class="ponente" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 2] + '</span></div> <span class="badge rounded-pill ver-curso" title="Ver el detalle de este curso" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-eye"></i></span><span class="badge rounded-pill agendar_curso" title="Comenzar este curso" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-play"></i></span></li');
+                        $(".list-group").append('<li id_curso="' + JSON.parse(data)[i] + '" agendado="'+JSON.parse(data)[i+3]+'" class="list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto"><div class="fw-bold nombre_curso" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 1] + '</div>Ponente: <span class="ponente" id_curso="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 2] + '</span></div><span class="badge rounded-pill btn_download_asis_masiva" id_curso='+JSON.parse(data)[i]+'><i class="fas fa-scroll"></i></span><span class="badge rounded-pill ver-curso" title="Ver el detalle de este curso" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-eye"></i></span><span class="badge rounded-pill agendar_curso" title="Comenzar este curso" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-play"></i></span></li');
                         $(".iniciar_curso").attr("id_curso", id_curso_en_detalle);
                     }
                 }
                 
+                
             }
+
+           
+            //Descarga de constancias masivas
+            $(".btn_download_asis_masiva").on('click',function(){
+                console.log('id_curso_para_contancias: '+$(this).attr('id_curso'));
+            });
+             
+            
 
             $(".ver-curso[agendado=1]").click()
 
@@ -814,14 +824,26 @@ $(document).ready(function () {
             let i = 0;
             while (i < JSON.parse(data).length) {
                 if(JSON.parse(data)!='ERROR')
-                $("table#example tbody").append('<tr><td>' + JSON.parse(data)[i + 1] + '</td><td>' + JSON.parse(data)[i + 2] + '</td><td>' + JSON.parse(data)[i + 3] + '</td><td>' + JSON.parse(data)[i + 4] + '</td></tr>');
-
+                {
+                    
+                    $("table#example tbody").append('<tr><td>' + JSON.parse(data)[i + 1] + '</td><td>' + JSON.parse(data)[i + 2] + '</td><td><span class="tag is-success" title="Fecha y hora de entrada de esta asistencia">'+JSON.parse(data)[i + 3]+'</span></td><td><span class="tag is-danger" title="Fecha y hora de salida de esta asistencia">'+JSON.parse(data)[i + 4]+'</span></td><td><button  class="button is-rounded is-primary btn_download_constancia"><i class="fas fa-download"></i></button></td></tr>');
+                }
                 i = i + 5;
 
                 //si ya se termino de rellenar el datatable
                 if (i == JSON.parse(data).length) {
+                    $('table').show();
                     //si no existe un datatable actualmente
                     if ($('#example_wrapper').length == 0) {
+                        //descargar asistencias
+                        $(".btn_download_constancia").on('click',function(){
+                            console.log('IMPRESION DE DATOS PARA LA CONTANCIA:')
+                            console.log('Nombre: '+$(this).parent().prev().prev().prev().text());
+                            console.log('Area: '+$(this).parent().prev().prev().prev().prev().text());
+                            console.log('Entrada: '+$(this).parent().prev().prev().text());
+                            console.log('Salida: '+$(this).parent().prev().text());
+                            console.log($('div.nombre_curso[id_curso='+id_curso_en_datatable+']').text());
+                        });
                         //genera el datatable
                         generar_datatable();
                         //declara la funcion que cambia los estilos del li cuando es clickeado

@@ -27,7 +27,7 @@ $( document ).ready(function() {
                     $(".avs").hide();
                     $('.pass_inv').show();
                 }else{
-                    window.location="../index.php";
+                    window.location="./index.php";
                 }
             })
         
