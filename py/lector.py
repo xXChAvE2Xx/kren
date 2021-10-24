@@ -23,6 +23,7 @@ con = mysql.connector.connect(user='root', password='T3si2', host='localhost', d
 
 def main():
 	try:
+
 		GPIO.setmode(GPIO.BOARD) # Usamos el numero Fisico
 		GPIO.setup(led_espera, GPIO.OUT)#Configuracion de los LEDs
 		GPIO.setup(led_rfid, GPIO.OUT)#Configuracion de los LEDs
@@ -37,7 +38,7 @@ def main():
 		GPIO.setup(boton_fin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #Configuracion del boton fin
 		GPIO.add_event_detect(boton_fin, GPIO.RISING) # Evento de configuración en el flanco ascendente del pin 8
 
-		iniciar = GPIO.wait_for_edge(boton_inicio, GPIO.RISING, timeout=5000) #para debug= timeout=5000 Esperamos a que se presione el boton inicio
+		iniciar = GPIO.wait_for_edge(boton_inicio, GPIO.RISING) #para debug= timeout=5000 Esperamos a que se presione el boton inicio
 
 		if iniciar is None:
 			GPIO.output(led_espera, GPIO.LOW)
@@ -103,7 +104,7 @@ def leer_tags():
 			if cursorF.rowcount >= 1:
 				GPIO.output(led_espera, GPIO.HIGH)
 				GPIO.output(pin_led_error, GPIO.HIGH)
-				salida = GPIO.wait_for_edge(boton_fin, GPIO.RISING, timeout=5000) #para debug= timeout=5000 Esperamos a que se presione el boton inicio
+				salida = GPIO.wait_for_edge(boton_fin, GPIO.RISING) #para debug= timeout=5000 Esperamos a que se presione el boton inicio
 
 				if salida is None:
 					GPIO.output(led_espera, GPIO.LOW)
@@ -144,7 +145,7 @@ def leer_tags():
 		cursorF.close()
 		cursorH.close()
 		cursorC.close()
-		con.close()
+		#con.close()
 		print("Finalizo")
 		main()
 
