@@ -14,10 +14,11 @@ $nombre = "";
 $curso = "";
 
 if($id_curso != null){
-	$sql = "SELECT Empleados.id_empleado, Empleados.nombre_empleado, Cursos.nombre_curso, Cursos.fecha_hora_inicio FROM RFID 
-		INNER JOIN Empleados ON RFID.id_empleado = Empleados.id_empleado 
-		INNER JOIN Cursos ON RFID.id_curso = Cursos.id_curso
-		WHERE RFID.id_curso = '$id_curso'";
+	$sql = "SELECT * FROM vw_constancia WHERE id_curso = '$id_curso';"
+	//$sql = "SELECT Empleados.id_empleado, Empleados.nombre_empleado, Cursos.nombre_curso, Cursos.fecha_hora_inicio FROM RFID 
+		//INNER JOIN Empleados ON RFID.id_empleado = Empleados.id_empleado 
+		//INNER JOIN Cursos ON RFID.id_curso = Cursos.id_curso
+		//WHERE RFID.id_curso = '$id_curso'";
 
 	$query = $conn->query($sql);
 

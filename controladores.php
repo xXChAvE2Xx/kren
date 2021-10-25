@@ -248,8 +248,8 @@
 			$id_curso = $_POST['id_curso'];;
 			$i=0;
 			$asistencias[]=0;
-			$sql = "SELECT Empleados.id_empleado, Empleados.nombre_empleado, Empleados.area, RFID.entrada, RFID.salida FROM RFID INNER JOIN Empleados ON RFID.id_empleado = Empleados.id_empleado WHERE RFID.id_curso = '$id_curso';";
-			//$sql = "select * from rfid;";
+			$sql = "SELECT * FROM vw_most_asis WHERE id_curso = '$id_curso';";
+
 			$result = $conn->query($sql);	
 			if ($result->num_rows > 0)
 			{
