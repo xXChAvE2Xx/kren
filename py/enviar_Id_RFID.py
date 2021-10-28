@@ -14,4 +14,3 @@ try:
 	print(data);
 finally:
 	GPIO.output(led_rfid, GPIO.LOW)
-	#GPIO.cleanup()
