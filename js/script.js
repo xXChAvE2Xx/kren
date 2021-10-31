@@ -112,7 +112,21 @@ $(document).ready(function () {
            
             //Descarga de constancias masivas
             $(".btn_download_asis_masiva").on('click',function(){
-                console.log('id_curso_para_contancias: '+$(this).attr('id_curso'));
+
+                var nombre_ventana = "";
+                var idcurso = $(this).attr('id_curso');
+                var nombre_curso = $("li[id_curso=" + idcurso + "] div.nombre_curso").text();
+                var link = ""
+                var online = Offline.state
+                if (online == 'up') {
+                    nombre_ventana = "Se enviaron las constancias";
+                }else{
+                    nombre_ventana = "Se crearon las constancias";
+                }
+                nombre_ventana += " del curso <strong>"+nombre_curso+"</strong>";
+                console.log(nombre_ventana)
+                window.open("constancia.php?online="+online+"&idcurso="+idcurso+"&text="+nombre_ventana, nombre_ventana, 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=200,left = 390,top = 50');
+
             });
              
             
@@ -937,4 +951,14 @@ $(document).ready(function () {
         }
     }
     $('table').hide();
+
+    //Descomentar para probar en Raspberry
+    //NO BORRAR
+    //Offline.options = {checks: {xhr: {url: 'https://kren2021com.000webhostapp.com/'}}};
+    //NO BORRAR
+
+    var run = function(){
+      Offline.check();
+    }
+    setInterval(run, 2000); //Para saber si seguimos en linea tenemos que checar cada 3 segundos
 }); //fin document-ready

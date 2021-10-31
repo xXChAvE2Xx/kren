@@ -21,7 +21,10 @@
 
   <link href="lib/fontawesome/css/all.min.css" rel="stylesheet"><!--Fontawesome css-->
   <script href="lib/fontawesome/js/all.min.js" type="text/javascript"></script><!--Fontawesome js h-->
-
+<!--Offline lib-->
+  <link rel="stylesheet" href="lib/offline/tema/offline-theme-slide-indicator.css"/></link>
+  <link rel="stylesheet" href="lib/offline/lenguaje/offline-language-spanish-indicator.css"/></link>
+<!-- Fin Offline lib-->
   <link rel="stylesheet" href="css/animate.min.css"/><!--Animate.css-->
 
   <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet"></link><!--Bootstrapp css-->
@@ -38,6 +41,7 @@
 
   <link href="css/estilos.css" rel="stylesheet"></link><!--Estilos | Kren.com-->
 
+  <script src="lib/offline/offline.js"></script>
   <script src="js/script.js"></script><!--Scripts | Kren.com-->
   <script src="js/notify.js"></script><!--Scripts | Kren.com-->
 
@@ -298,9 +302,7 @@
       <!--<button class="modal-close is-large" aria-label="close"></button>-->
     </div>
 </body>
-
 </html>
-
 
 
 
