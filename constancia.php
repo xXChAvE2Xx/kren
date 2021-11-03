@@ -1,17 +1,18 @@
 <?php
+ini_set('max_execution_time', 0); // 0 = Ilimitado
 require('lib/fpdf/fpdf.php');
 require('lib/PHPMailer/PHPMailerAutoload.php');
 require('conexion.php');
 
-define ("SENDEREMAIL", "raul25042000@hotmail.com");
-define ("SENDERNAME", "Raul Chavez");
+define ("SENDEREMAIL", "krencom7@gmail.com");
+define ("SENDERNAME", "Kren System");
 define ("SMTPHOST", "smtp.gmail.com");
-define ("SMTPUSER", "krencom7@gmail.com");
-define ("SMTPPASS", "K2021renMRA");
-
-$status = isset($_GET["online"]) ? $_GET["online"]: null;
-$id_curso = isset($_GET["idcurso"]) ? $_GET["idcurso"]: null; 
-$msg = isset($_GET["text"]) ? $_GET["text"]: null; 
+define ("SMTPUSER", "");
+define ("SMTPPASS", "");
+//Para realizar pruebas descomentar "down" y comentar "isset($_GET["online"]) ? $_GET["online"]: null;"
+$status = isset($_GET["online"]) ? $_GET["online"]: null;//"down";
+$msg = isset($_GET["text"]) ? $_GET["text"]: null;
+$id_curso = isset($_GET["idcurso"]) ? $_GET["idcurso"]: null;  
 $nombre_emp = isset($_GET["nombre"]) ? $_GET["nombre"]: null;
 $nombre_curso = isset($_GET["nom_curso"]) ? $_GET["nom_curso"]: null;
 $entrada = isset($_GET["entrada"]) ? $_GET["entrada"]: null;
@@ -109,13 +110,14 @@ function PutLink($URL, $txt)
 }
 }
 
-if($id_curso != null){
+if($id_curso != null && $status != null){
 	//Se ejecuta si se va enviar y si es para todo el personal del curso
 	$sql = "SELECT * FROM vw_constancia WHERE id_curso = '$id_curso';";
 	$query = $conn->query($sql);
 
-	if($status != "up"){
-		/*// Plantilla del correo
+	if($status == "up"){
+		$i = 0;
+		// Plantilla del correo
 		$subject = "Constancia de ";
 		$message0 = "Te informamos que tu constancia ya fue generada.\n\n";
 
@@ -127,82 +129,17 @@ if($id_curso != null){
 	    $mail->Username = SMTPUSER;                 // Usuario SMTP
 	    $mail->Password = SMTPPASS;                           // Contraseña SMTP
 	    $mail->SMTPSecure = 'tls';                            // Activar encriptacion TLSted
-	    $mail->Port = 587;                                    // Puerto TCP
+	    $mail->Port = 465;                                    // Puerto TCP
 	    $mail->From = SENDEREMAIL;
 	    $mail->FromName = SENDERNAME;
 	    $mail->isHTML(false);
 
-		    foreach ($query as $row) {
-				$nombreEmpleado = $row["nombre_empleado"];
-				$nombre_curso = $row["nombre_curso"];
-				$salida = $row["fecha_hora_inicio"];
-				//$email = $row["correo"];
-				$email = 'rchavez1@ucol.mx';
-			    // Necesario porque FPDF no soporta UTF-8.
-			    $nombre = iconv('UTF-8', 'windows-1252', $nombreEmpleado);
-
-			    $constancia = "<b>CONSTANCIA</b>";
-				$html = 'Por su asistencia y participacion en el curso<b>"'.$nombre_curso.'"</b>';
-
-				/*$pdf = new PDF('L', 'mm', 'A4');
-				$pdf->AddPage();
-				$pdf->Image('img/background.jpg', 0, 0, 300, 230);
-				$pdf->Image('img/wave.png', 0, 0, 300, 230, 'PNG');
-				$pdf->SetFont('Arial','',30);
-				$pdf->Image('img/raspberry.png',10,9,-500);
-				$pdf->Image('img/kren.png',262,9,-230);
-				$pdf->MultiCell(0,10,'UNIVERSIDAD DE COLIMA',0,'C');
-				$pdf->SetFont('Arial','',20);
-				$pdf->Ln(10);
-				$pdf->Cell(0,10,'Otorga la presente',0,1,'C');
-				$pdf->SetFont('Arial','',20);
-				$pdf->WriteHTML($constancia);
-				//$pdf->Cell(0,10,'CONSTANCIA',0,1,'C');
-				$pdf->Cell(0,10,'A: '.$nombreEmpleado,0,1,'C');
-				$pdf->Ln(10);
-				$pdf->SetFont('Arial','',17);
-				$pdf->WriteHTML($html);
-				$pdf->SetFont('Arial','',14);
-				$pdf->Ln(5);
-				$pdf->Cell(0,10,'Colima, Mexico a'.$salida,0,1,'R');
-				$pdf->Ln(14);
-				$pdf->MultiCell(0,10,'NOMBRE_ENCARGADO',0,'C');
-				$pdf->MultiCell(0,10,'PUESTO_ENCARGADO',0,'C');
-				$pdf->Output('F', 'pdf/'.$nombre.'.pdf', true);*/
-
-
-			/*if (filter_var($email, FILTER_VALIDATE_EMAIL)){
-		        $message = $message0;
-				$message .= "Gracias por asistir al curso ".$nombre_curso;
-		        $message .= "\n\nAtentamente,\n el equipo de Kren";
-		        $mail->Subject = "Constancia de ".$nombre;
-		        $mail->clearAddresses();       // remove previous recipient
-		        $mail->addAddress($email);     // add a recipient
-		        $mail->Body= $message;
-		       	$mail->AddAttachment('pdf/'.$nombre.'.pdf');
-
-	        	if(!$mail->Send()){
-		            echo "Message could not be sent.";
-		            echo "Mailer Error: " . $mail->ErrorInfo;
-		            continue;
-		        }else{
-		            echo "Message sent to: ".$email."\n";
-		            //unlink('pdf/'.$nombre.'.pdf');
-		        }
-		    }else{
-		    	echo $nombre."<br>";
-		    	echo "Generada pero el email es invalido<br>";
-		    }
-		}*/
-	}else{
-		// Creamos un instancia de la clase ZipArchive
-		$zip = new ZipArchive();
-		// Creamos y abrimos un archivo zip temporal
-		$zip->open("constancias.zip",ZipArchive::CREATE);
-		foreach ($query as $row) {
+	    foreach ($query as $row) {
 			$nombreEmpleado = $row["nombre_empleado"];
 			$nombre_curso = $row["nombre_curso"];
 			$salida = $row["fecha_hora_inicio"];
+			//$email = $row["correo"];
+			$email = 'rchavez1@ucol.mx';
 		    // Necesario porque FPDF no soporta UTF-8.
 		    $nombre = iconv('UTF-8', 'windows-1252', $nombreEmpleado);
 
@@ -233,26 +170,109 @@ if($id_curso != null){
 			$pdf->Ln(14);
 			$pdf->MultiCell(0,10,'NOMBRE_ENCARGADO',0,'C');
 			$pdf->MultiCell(0,10,'PUESTO_ENCARGADO',0,'C');
-			$pdf->Output('F', 'pdf/'.$nombre.'.pdf', true);
+			$pdf->Output('F', 'constancias/'.$nombre.$i.'.pdf', true);
+			$i++;
+			if (filter_var($email, FILTER_VALIDATE_EMAIL)){
+		        $message = $message0;
+				$message .= "Gracias por asistir al curso ".$nombre_curso;
+		        $message .= "\n\nAtentamente,\n el equipo de Kren";
+		        $mail->Subject = "Constancia de ".$nombre;
+		        $mail->clearAddresses();       // remove previous recipient
+		        $mail->addAddress($email);     // add a recipient
+		        $mail->Body= $message;
+		       	//$mail->AddAttachment('pdf/'.$nombre.$i.'.pdf', $nombre);
+		       	if ($mail->AddAttachment('constancias/'.$nombre.$i.'.pdf', $nombre)) {
+		       		echo "Se agrego el archivo ".$nombre.$i.'.pdf';
+		       	}
+	        	if(!$mail->Send()){
+		            echo "Message could not be sent.";
+		            echo "Mailer Error: " . $mail->ErrorInfo;
+		            continue;
+		        }else{
+		        	//unlink('constancias/'.$nombre.'.pdf');
+		            echo "Message sent to: ".$email."\n";
+		            
+		        }
+		    }else{
+		    	echo $nombre."<br>";
+		    	echo "Generada pero el email es invalido<br>";
+		    }
 
-			// Añadimos un archivo en la rais del zip.
-			$zip->addFile('pdf/'.$nombre.'.pdf');
-			unlink('pdf/'.$nombre.'.pdf');
 		}
+	}elseif ($status == "down") {
+		$i=0;
+		$old_nom = "";
+		$id_nombre = 1;
+		// Creamos un instancia de la clase ZipArchive
+		$zip = new ZipArchive();
+		// Creamos y abrimos un archivo zip temporal
+		$zip->open("constancias.rar",ZipArchive::CREATE);
+		if ($query->num_rows > 0){
+			while($row = $query->fetch_assoc()){
+				$nombreEmpleado = $row["nombre_empleado"];
+				$nombre_curso = $row["nombre_curso"];
+				$salida = $row["fecha_hora_inicio"];
+			    // Necesario porque FPDF no soporta UTF-8.
+			    $nombre = iconv('UTF-8', 'windows-1252', $nombreEmpleado);
+			    if($old_nom == $nombre){
+			    	$nombre = $nombre."_".$id_nombre;
+			    	$id_nombre++;
+			    }
+			    $constancia = "<b>CONSTANCIA</b>";
+				$html = 'Por su asistencia y participacion en el curso<b>"'.$nombre_curso.'"</b>';
+
+				$pdf = new PDF('L', 'mm', 'A4');
+				$pdf->AddPage();
+				$pdf->Image('img/background.jpg', 0, 0, 300, 230);
+				$pdf->Image('img/wave.png', 0, 0, 300, 230, 'PNG');
+				$pdf->SetFont('Arial','',30);
+				$pdf->Image('img/raspberry.png',10,9,-500);
+				$pdf->Image('img/kren.png',262,9,-230);
+				$pdf->MultiCell(0,10,'UNIVERSIDAD DE COLIMA',0,'C');
+				$pdf->SetFont('Arial','',20);
+				$pdf->Ln(10);
+				$pdf->Cell(0,10,'Otorga la presente',0,1,'C');
+				$pdf->SetFont('Arial','',20);
+				$pdf->WriteHTML($constancia);
+				$pdf->Cell(0,10,'A: '.$nombreEmpleado,0,1,'C');
+				$pdf->Ln(10);
+				$pdf->SetFont('Arial','',17);
+				$pdf->WriteHTML($html);
+				$pdf->SetFont('Arial','',14);
+				$pdf->Ln(5);
+				$pdf->Cell(0,10,'Colima, Mexico a'.$salida,0,1,'R');
+				$pdf->Ln(14);
+				$pdf->MultiCell(0,10,'NOMBRE_ENCARGADO',0,'C');
+				$pdf->MultiCell(0,10,'PUESTO_ENCARGADO',0,'C');
+				$pdf->Output('F', 'constancias/'.$nombre.$i.'.pdf', true);
+
+				// Añadimos un archivo en la rais del zip.
+				$zip->addFile('constancias/'.$nombre.$i.'.pdf', $nombre.".pdf");
+				$i++;
+				$old_nom = $nombre;
+			}
+		}	
 		// Una vez añadido los archivos deseados cerramos el zip.
 		$zip->close();
-		$filepath = "constancias.zip";
+		$filepath = "constancias.rar";
 		// Creamos las cabezeras que forzaran la descarga del archivo como archivo zip.
 		header('Content-Type: application/Zip');
-		header('Content-Disposition: attachment; filename="constancias.zip"');
+		header('Content-Disposition: attachment; filename="constancias.rar"');
 		header('Content-Length: '.filesize($filepath) );
 		readfile($filepath);
 		// Por último eliminamos el archivo temporal creado
-		unlink('constancias.zip');//Destruye el archivo temporal
-	}
-	
-
-	
+		unlink('constancias.rar');//Destruye el archivo temporal
+		$files = glob('constancias/*'); //obtenemos todos los nombres de los ficheros
+		foreach($files as $file){
+		    if(is_file($file))
+		    unlink($file); //elimino el fichero
+		}
+		$i=0;
+	}else{
+		echo "Ocurrio un problema";
+		echo "<br> Estado: ".$status;
+		echo "<br> id_curso: ".$id_curso;
+	}	
 }else{
 	//Se ejecuta solo si es en especifico
 	$constancia = "<b>CONSTANCIA</b>";
@@ -287,15 +307,23 @@ if($id_curso != null){
 
 }
 
-$url = "url_del_archivo";
+/*$url = "url_del_archivo";
 if($msg != null){
 	echo $msg;
 	if($status == "down")
 		echo "<p>Descargar archivo zip <a href='".$url."'>aqui</a></p>";
 }else{
 	echo "<p>Constancia de".$nombre_emp." generada.</p>";
-}
+}*/
 
 ?>
+<<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>$msg</title>
+</head>
+<body>
+
 </body>
 </html>

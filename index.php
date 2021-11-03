@@ -44,7 +44,6 @@
   <script src="lib/offline/offline.js"></script>
   <script src="js/script.js"></script><!--Scripts | Kren.com-->
   <script src="js/notify.js"></script><!--Scripts | Kren.com-->
-
 </head>
 
 <body>
@@ -277,7 +276,31 @@
       </div>
       <!--<button class="modal-close is-large" aria-label="close"></button>-->
     </div>
-
+    <!-- MODAL NOTIFICACION CONSTANCIAS -->
+    <div class="modal modal-constancia">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <div class="card">
+          <div class="card-content">
+            <div class="media">
+              <div class="media-content">
+                <p class="title is-4">Creando constancias y comprimiendolas, por favor no cierre la ventana hasta su archivo se haya descargado.</p>
+                <img src="img/wait_constancia.gif">
+              </div>
+               <div class="media-right">
+                <i class="fas fa-times cerrar_modal" hidden></i>
+              </div>
+            </div>
+           <div class="content">
+              <button class="button is-primar is-outlined cerrar_modal">Entendido</button> 
+              <br>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--<button class="modal-close is-large" aria-label="close"></button>-->
+    </div>
+    <!-- FIN MODAL NOTIFICACION CONSTANCIAS -->
     <div class="modal modal-exito">
       <div class="modal-background"></div>
       <div class="modal-content">
@@ -291,7 +314,6 @@
                 <i class="fas fa-times cerrar_modal" hidden></i>
               </div>
             </div>
-
             <div class="content botones-modale-exito">
               <button class="button is-primary is-outlined cerrar_modal">Ok</button> 
               <br>
