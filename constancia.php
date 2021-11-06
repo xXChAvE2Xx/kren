@@ -18,6 +18,7 @@ $nombre_curso = isset($_GET["nom_curso"]) ? $_GET["nom_curso"]: null;
 $entrada = isset($_GET["entrada"]) ? $_GET["entrada"]: null;
 $salida = isset($_GET["salida"]) ? $_GET["salida"]: null;
 $area = isset($_GET["area"]) ? $_GET["area"]: null;
+$txt = "Terminado";
 
 $nombre = "";
 $curso = "";
@@ -114,7 +115,6 @@ if($id_curso != null && $status != null){
 	//Se ejecuta si se va enviar y si es para todo el personal del curso
 	$sql = "SELECT * FROM vw_constancia WHERE id_curso = '$id_curso';";
 	$query = $conn->query($sql);
-
 	if($status == "up"){
 		$i = 0;
 		// Plantilla del correo
@@ -250,24 +250,24 @@ if($id_curso != null && $status != null){
 				$zip->addFile('constancias/'.$nombre.$i.'.pdf', $nombre.".pdf");
 				$i++;
 				$old_nom = $nombre;
+			}	
+			// Una vez añadido los archivos deseados cerramos el zip.
+			$zip->close();
+			$filepath = "constancias.rar";
+			// Creamos las cabezeras que forzaran la descarga del archivo como archivo zip.
+			header('Content-Type: application/Zip');
+			header('Content-Disposition: attachment; filename="constancias.rar"');
+			header('Content-Length: '.filesize($filepath) );
+			readfile($filepath);
+			// Por último eliminamos el archivo temporal creado
+			unlink('constancias.rar');//Destruye el archivo temporal
+			$files = glob('constancias/*'); //obtenemos todos los nombres de los ficheros
+			foreach($files as $file){
+			    if(is_file($file))
+			    unlink($file); //elimino el fichero
 			}
-		}	
-		// Una vez añadido los archivos deseados cerramos el zip.
-		$zip->close();
-		$filepath = "constancias.rar";
-		// Creamos las cabezeras que forzaran la descarga del archivo como archivo zip.
-		header('Content-Type: application/Zip');
-		header('Content-Disposition: attachment; filename="constancias.rar"');
-		header('Content-Length: '.filesize($filepath) );
-		readfile($filepath);
-		// Por último eliminamos el archivo temporal creado
-		unlink('constancias.rar');//Destruye el archivo temporal
-		$files = glob('constancias/*'); //obtenemos todos los nombres de los ficheros
-		foreach($files as $file){
-		    if(is_file($file))
-		    unlink($file); //elimino el fichero
+			$i=0;
 		}
-		$i=0;
 	}else{
 		echo "Ocurrio un problema";
 		echo "<br> Estado: ".$status;
@@ -307,23 +307,14 @@ if($id_curso != null && $status != null){
 
 }
 
-/*$url = "url_del_archivo";
-if($msg != null){
-	echo $msg;
-	if($status == "down")
-		echo "<p>Descargar archivo zip <a href='".$url."'>aqui</a></p>";
-}else{
-	echo "<p>Constancia de".$nombre_emp." generada.</p>";
-}*/
-
 ?>
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>$msg</title>
+	<title><?php echo $msg ?></title>
 </head>
 <body>
-
+<h5><?php if ($i == 0){echo "Este curso aun no tiene asistencias";}else{ echo "Terminado";} ?></h5>
 </body>
 </html>
