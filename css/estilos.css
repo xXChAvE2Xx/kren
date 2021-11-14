@@ -5,7 +5,96 @@
       min-width: 44vh;
 
     }
+    .animate__slideOutRight_own{
+      -webkit-animation-name: animate__slideOutRight_own;
+      -webkit-animation-duration: 500ms;
+      -webkit-animation-fill-mode: forwards;
+    }
 
+    @keyframes animate__slideOutRight_own {
+      0%{
+        -webkit-transform: translateZ(0);
+      }
+      100%{
+        -webkit-transform: translate3d(100%,0,0);
+      }
+    }
+    
+    .animate__slideInRight_own{
+      -webkit-animation-name: animate__slideInRight_own;
+      -webkit-animation-duration: 500ms;
+      -webkit-animation-fill-mode: forwards;
+    }
+
+    @keyframes animate__slideInRight_own {
+      0%{
+        transform: translate3d(100%,0,0);
+      }
+      100%{
+        transform: translateZ(0);
+      }
+    }
+
+    .contenidos_disp_moviles{/*div que contiene el formulario*/
+      padding: 5%;
+    }
+    .editar_curso_movile{
+      display:none;
+    }
+
+    #titulo-detalle{
+      color:#3DD6AF;
+    }
+
+    .contenidos_disp_moviles form{/*formulario para moviles*/
+      width: 100%;
+      background-color: #fafcff70;
+      padding: 4%;
+      border-radius: 21px;
+    }
+
+    .cerrar-formulario-movile{
+      float: right;
+       width: 45%;
+    }
+    
+    .crear_curso_movile,.guardar_cambios_movile,.agregar_empleado_movile{
+      width: 45%;
+    }
+
+    .button-vincular-movile{
+      width: 100%;
+    }
+
+    .btn_warning_own{
+      background-color: #ffed4ef7;
+      border-radius: 21px;
+    }
+
+    .btn_primary_own{
+      background-color: #3dd6af82;
+      border-radius: 21px;
+    }
+
+    .contenidos_disp_moviles button{
+      margin-top: 5%;
+      font-size: 1.3rem;
+    }
+
+    .modal-asistencia .modal-content{
+      margin-top: 20vh;
+     
+    }
+
+
+    .contenidos_disp_moviles{
+      font-size: 1.5rem;
+      display: none;
+    }
+
+    .contenidos_disp_moviles,.contenidos_disp_moviles input{
+      font-size: 1.5rem;
+    }
     .cerrar_sesion{
       float: right !important; 
       /*margin-right: 1% !important;*/
@@ -13,7 +102,10 @@
       border-bottom-left-radius: 21px;
       /*margin-right: -1.7% !important;*/
     }
-
+    .opciones_movile{
+      flex-wrap: wrap;
+      justify-content: center;
+    }
 
     .fa-power-off{
       color:#3dd6af !important;
@@ -36,10 +128,10 @@
 
     form{
         width: 29vw;
-        margin-left: 20%;
+      
     }
     
-    .btn_download_constancia{
+    .btn_download_constancia,.btn_info_asistencia{
       height: 12px;
       margin-left: 20%;
     }
@@ -88,7 +180,7 @@
       font-size: 71%;
     }
      #form-agregar-curso span, #form-agregar-empleado span{
-      color: white;
+      color: black;
      }
     #form-agregar-curso textarea, #form-agregar-empleado textarea{
       background-color: #d9d9d9;
@@ -102,28 +194,45 @@
       border-radius: 21px;
     }
 
+    span#botones-detalle{
+      display:block;
+    }
+
   
     
   
  
   #curso-detalle #info{
-        overflow-y: scroll;
+     overflow-y: scroll;
     height: 10vh;
   }
   #ponente{
     float: right;
     color: #ffc107;
   }
+
+  #cont_tabla{
+    height: 30vh;
+    overflow: scroll;
+  }
    
-  .modal-content{
+  .modal-exito .modal-content{
     margin-top: 38vh;
   }
-  .modal-content{
+  .modal-exito .modal-content{
+    text-align: center;
+  }
+
+  #tabla_en_sa{
+    text-align: center;
+  }
+
+  .botones-modales{
     text-align: center;
   }
 
   #form-agregar-curso form, #form-agregar-empleado form{
-    background-color: #6e7275a8;
+    background-color: #fafcff70;
     border-radius: 2%;
     padding: 2%;
     /*animation-name: fadein;
@@ -141,7 +250,7 @@
         padding: 1%;
         display: flow-root;
         color: white;
-        background-color: #12171b;
+        background-color: #1d2f39b5;
         height: 6%;
         width: 90%;
         border-radius: 71px;
@@ -188,13 +297,13 @@
     
   }
   .selector_opc span{
-    background-color: #2f323c;
+    
     border-radius: 9px;
     padding: 1%;
     margin:1%;
     display: inline-block;
     width: 38%;
-    border: 2px solid transparent;
+    border: 2px solid white;
   }
   .backcolor:hover{
     animation-name: cambio_background;
@@ -211,6 +320,16 @@
   #span-der-form{
     float: right;
   }
+
+  
+  .dataTables_filter input{
+    border-top-right-radius: 23px !important;
+    text-align: center;
+    display: block;
+    width: 99%;
+  }
+
+  
 
   .span-numero-telefono{
     width: 100%;
@@ -265,14 +384,6 @@
     background-color: #ffffff00 !important;
   }
 
-  .dataTables_filter input{
-    border-top-right-radius: 21px !important;
-    text-align: center;
-  }
-
-  .boton-volver-asistencias{
-    border-top-left-radius: 21px !important;
-  }
  
   .controles_main:not(button){ 
     margin-top: -2%;
@@ -303,12 +414,19 @@
   }
 
   .menu{
-    
-    background-color: #2f323c !important;
+    background-color: #1d2f39b5 !important;
   }
 
+  
+  .rounded-pill {
+    background-color: #3DD6AF;
+    color: black;
+  }
 
-
+  .modal_centrado{
+    margin-top: 40vh;
+    text-align: center;
+  }
 
 
   
@@ -345,11 +463,14 @@
       {
          
         .selector_opc{
-          margin-top: 13vh;
+          display: flex;
+          width: 80%;
+          flex-wrap: wrap;
+          justify-content: center;
         }
 
           #cont-d div:not(.selector_opc){
-              background-color: #6e7275a8; 
+              background-color: #1d2f39b5; 
           }
 
           #cont-i{
@@ -368,10 +489,17 @@
           }
 
           #agregar-curso{
-              border-radius: 4px;
-              color: #d5d8d7;
-              margin-bottom: 6.3%;
-              display: flow-root;
+            border-bottom-right-radius: 40%;
+            border-top-left-radius: 40%;
+            color: #d5d8d7;
+            margin-bottom: 6.3%;
+            display: flow-root;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            flex-wrap: nowrap;
+            flex-direction: row;
+            align-items: center;
           }
 
          
@@ -397,8 +525,7 @@
           }
           
           #label-actividad-act{
-            overflow-y:scroll ;
-          
+            overflow-y:scroll;
             height: 7.5vw;
           }
 
@@ -414,13 +541,9 @@
           }
 
 
-          .rounded-pill {
-            background-color: #3DD6AF;
-            color: black;
-          }
 
           #curso-detalle{
-            background-color: #6e7275a8; 
+            background-color: #1d2f39b5; 
             border-radius: 4px;
             color: #d5d8d7;
             padding: 2%;
@@ -429,13 +552,10 @@
           }
 
           #botones-detalle{
-            float:right;
             margin-top: 1%;
           }
           
-          #titulo-detalle{
-            color:#3DD6AF;
-          }
+         
          
 
         /*news*/
@@ -454,11 +574,37 @@
           font-size: 2vh;
       }
 
+      #example_wrapper{
+        font-size:1rem;
+      }
+
     }
+    @media only screen and (min-width : 901px)/*900 hacia arriba*/
+    {
+      #botones-detalle{
+         float:right; 
+      }
+    }
+
+    
     
    /*abajo de 900*/
    @media only screen and (max-device-width : 900px)/*900 hacia abajo*/
     {
+    
+
+      .opciones_desktop{
+        display: none;
+      }
+      .opciones_movile{
+        display: flex !important;
+      }
+      .editar_curso_movile{
+        display:inline-block;
+      }
+      .editar_curso{
+        display:none
+      }
       .det_curso{
         display: block;
         width: 100%;
@@ -487,9 +633,22 @@
         font-size: 2vh;
       }
 
+          
+      .dataTables_filter input{
+        border-radius: 21px !important;
+        text-align: center;
+        display: block;
+      }
+
+      .boton-volver-asistencias{
+        border-radius: 21px !important;
+        margin-left: 15%;
+        display: block;
+      }
+
       .selector_opc span{
         width: 44%;
-        font-size: 1.27vh;
+        font-size: 1.2rem;
         margin-top: 4%;
       }
 
@@ -511,9 +670,10 @@
       
       #cont-d
       {
-        width: 100%;
+        padding: 4% !important;
+        width: 100% !important;
         padding-left: 2vh;
-         padding-right: 2vh;
+        padding-right: 2vh;
       }
       #cont-d div:not(.selector_opc){
         background-color: #6e7275a8; 
@@ -583,7 +743,7 @@
      #botones-detalle button{
       margin-top: 11px;
       font-size: 2vh;
-      width: 48%;
+      width: 45%;
      }
       
 
@@ -658,7 +818,7 @@
          padding-right: 2vh;
       }
       #cont-d div:not(.selector_opc){
-        background-color: #6e7275a8; 
+        background-color: #1d2f39b5; 
         border-radius: 11px;
       }
 
@@ -728,25 +888,25 @@
       }
 
       #curso-detalle{
-        background-color: #6e7275a8; 
+        background-color: #1d2f39b5 !important;
         border-radius: 14px;
         padding: 2%;
         margin-top: 3vh;
         color: #fff;
         font-size: 1.8vh;
         padding-bottom: 2vh;
-        height: 24vh;
+        height: auto;
       }
       
       #botones-detalle{
-       float: right;
+
        width: 100%;
       }
 
      #botones-detalle button{
       font-size: 1.5vh;
-    height: 5%;
-    width: 48%;
+      height: 5%;
+      width: 45%;
      }
       
 

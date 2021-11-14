@@ -1,5 +1,5 @@
 <?php
-$conn = new mysqli('localhost', 'root', '', 'kren_db');
+$conn = new mysqli('localhost', 'root', 'root', 'kren_db');
 if ($conn->connect_error) {
     die('Error de Conexión (' . $conn->connect_errno . ') '. $conn->connect_error);
 }else{

@@ -1,8 +1,6 @@
  <?php
 
-	require $_SERVER["DOCUMENT_ROOT"].'/kren/conexion.php';
-
-	
+	require $_SERVER["DOCUMENT_ROOT"].'/conexion.php';
 
 	$axn = $_POST['axn'];
 
@@ -31,6 +29,30 @@
 			}
 			echo json_encode($cursos);
 
+		break;
+
+		case 'info_empleado':
+			$id_empleado = $_POST['id_empleado'];
+			$sql = "SELECT nombre_empleado, Edad, Telefono, Fecha_Nac, correo, domicilio, area, RFID_ID FROM empleados WHERE id_empleado = '$id_empleado';";
+			$result = $conn->query($sql);	
+			$i=1;
+
+			if ($result->num_rows > 0)
+			{
+				while($row = $result->fetch_assoc())
+				{
+					
+					$empleado[$i] = $row["Edad"];
+					$empleado[$i+1] = $row["Telefono"];
+					$empleado[$i+2] = $row["Fecha_Nac"];
+					$empleado[$i+3] = $row["correo"];
+					$empleado[$i+4] = $row["domicilio"];
+					$empleado[$i+5] = $row["area"];
+					$empleado[$i+6] = $row["RFID_ID"];
+					$i=($i+7);
+				}
+			} 
+			echo json_encode($empleado);
 		break;
 
 		case 'listado_empleados':
@@ -83,6 +105,14 @@
 		    echo json_encode($result);
 		break;
 
+		case 'borrar_empleado':
+			$id_empleado = $_POST['id_empleado'];
+			$sql = "DELETE FROM empleados WHERE id_empleado = ".$id_empleado.";";
+			$result = $conn->query($sql);
+	
+		    echo json_encode($result);
+		break;
+
 		case 'crear_curso':
 			$nombre = $_POST['nombre'];
 			$ponente = $_POST['ponente'];
@@ -124,6 +154,21 @@
 		    echo json_encode($result);
 		break;
 
+		case 'actualizar_empleado':
+			$id_empleado = $_POST['id_empleado'];
+			$nombre_empleado = $_POST['nombre_empleado'];
+			$correo = $_POST['correo'];
+			$fecha_nac = $_POST['fecha_nac'];
+			$area_departamento = $_POST['area_departamento'];
+			$telefono = $_POST['telefono'];
+			$domicilio = $_POST['domicilio'];
+			$rfid = $_POST['rfid'];
+
+			$sql="UPDATE empleados SET nombre_empleado = '$nombre_empleado', Telefono = '$telefono', Fecha_Nac = '$fecha_nac', correo = '$correo', domicilio = '$domicilio', area = '$area_departamento', RFID_ID = '$rfid' WHERE id_empleado = ".$id_empleado.";";
+			$result = $conn->query($sql);	
+		    echo json_encode($result);
+		break;
+
 		case 'agregar_empleado':
 			$nombre_empleado = $_POST['nombre'];
 			$correo = $_POST['correo'];
@@ -132,21 +177,14 @@
 		    $domicilio = $_POST['domicilio'];
 		    $area_departamento = $_POST['area_departamento'];
 		    $rfid = $_POST['id_RFID'];
+		
+			
 		    $edad = date('Y')-substr($fecha_nacimiento, 0, -6);
 		    
-		    $valid="SELECT RFID_ID, nombre_empleado FROM Empleados WHERE RFID_ID =".$rfid.";";
+			$sql="INSERT INTO Empleados (id_curso, nombre_empleado, Edad, Telefono, Fecha_Nac, correo, domicilio, area, RFID_ID) VALUES (NULL, '$nombre_empleado','$edad','$telefono','$fecha_nacimiento','$correo','$domicilio','$area_departamento', '$rfid');";
+			$result = $conn->query($sql);
+			echo json_encode($result); 
 
-		    $validacion = $conn->query($valid);
-
-		    if($validacion->num_rows > 0){
-		    	echo 0;
-		    }
-		    else{
-
-		    	$sql="INSERT INTO Empleados (id_curso, nombre_empleado, Edad, Telefono, Fecha_Nac, correo, domicilio, area, RFID_ID) VALUES (NULL, '$nombre_empleado','$edad','$telefono','$fecha_nacimiento','$correo','$domicilio','$area_departamento', '$rfid');";
-			    $result = $conn->query($sql);
-			    echo json_encode($result); 
-		    }
 		break;
 
 		
@@ -245,7 +283,7 @@
 			echo $result;
 		break;
 		case 'asistencias':
-			$id_curso = $_POST['id_curso'];;
+			$id_curso = $_POST['id_curso'];
 			$i=0;
 			$asistencias[]=0;
 			$sql = "SELECT * FROM vw_most_asis WHERE id_curso = '$id_curso';";
@@ -262,6 +300,32 @@
 					$asistencias[$i+3] = $row['entrada'];
 					$asistencias[$i+4] = $row['salida'];
 					$i=$i+5;
+				}
+
+				echo json_encode($asistencias);
+			}
+			else
+				echo json_encode('ERROR');
+		break;
+
+		case 'asistencias_empleado_curso_especifico':
+			$id_curso = $_POST['id_curso'];
+			$id_empleado = $_POST['id_empleado'];
+			
+			
+			$i=0;
+			$asistencias[]=0;
+
+			$sql = "SELECT entrada, salida FROM rfid WHERE id_empleado ='$id_empleado' AND id_curso = '$id_curso';";
+			
+			$result = $conn->query($sql);	
+			if ($result->num_rows > 0)
+			{
+				while($row = $result->fetch_assoc())
+				{
+					$asistencias[$i]   = $row['entrada'];
+					$asistencias[$i+1] = $row['salida'];
+					$i=$i+2;
 				}
 
 				echo json_encode($asistencias);

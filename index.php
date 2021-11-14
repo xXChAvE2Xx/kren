@@ -93,7 +93,7 @@
   </main>
   <br>
   <br>
-  <div id="contenido" ><!--contenido general-->
+  <div id="contenido"><!--contenido general-->
      
           
          
@@ -129,8 +129,12 @@
                 </span>
                 <span id="botones-detalle">
                   <!--<button type="button" class="btn btn-light iniciar_curso"> <i class="fas fa-edit"></i>Iniciar Curso</button>&nbsp;-->
-                  <button type="button" class="btn btn-light editar_curso" title="Editar este curso"> <i class="fas fa-edit"></i> Editar</button>&nbsp;
-                  <button type="button" class="btn btn-warning confirm_borrar_curso" title="Borrar este curso"> <i class="fas fa-trash"></i> Borrar</button>
+                    <!--boton para desktop-->
+                    <button type="button" class="btn btn-light editar_curso" title="Editar este curso"> <i class="fas fa-edit"></i> Editar</button>&nbsp;
+                    <!--boton para dispositivos moviles-->
+                    <button type="button" class="btn btn-light editar_curso_movile" title="Editar este curso"> <i class="fas fa-edit"></i> EditarM</button>&nbsp;
+
+                  <button type="button" class="btn btn_warning_own confirm_borrar_curso" title="Borrar este curso"> <i class="fas fa-trash"></i> Borrar</button>
                 </span>
               
           </div>
@@ -138,21 +142,30 @@
     
       <div id="cont-d" ><!--contenido derecha-->
        <div id="agregar-curso" class="animate__animated">
-         <div class="selector_opc">
-           <span class="backcolor" id="plus-agregar">
-              <i class="fas fa-plus"></i>
-              <br>Crear curso
-           </span>
-           <span class="backcolor" id="plus-agregar-empleado">
-            <i class="fas fa-user-plus"></i>
-            <br>Agregar empleado
-           </span>
-           <span class="backcolor" id="listado_asistencias">
-                <i class="fas fa-list"></i>
-                <br>Asistencias
-            </span>
-           
-         </div>
+        <div class="selector_opc opciones_desktop">
+          <!--botones para desktop-->
+          <span class="backcolor" id="plus-agregar">
+           <i class="fas fa-plus"></i><br>Crear curso
+          </span>
+          <span class="backcolor" id="plus-agregar-empleado">
+           <i class="fas fa-user-plus"></i><br>Agregar empleado
+          </span>
+          <span class="backcolor" id="listado_asistencias">
+            <i class="fas fa-list"></i><br>Asistencias
+          </span>
+        </div>
+        <div class="selector_opc opciones_movile" hidden>
+          <!--botones para dispositivos moviles-->
+          <span class="backcolor" id="plus-agregar-movile">
+           <i class="fas fa-plus"></i><br>Crear cursoM
+          </span>
+          <span class="backcolor" id="plus-agregar-empleado-movile">
+           <i class="fas fa-user-plus"></i><br>Agregar empleadoM
+          </span>
+          <span class="backcolor" id="listado_asistencias-movile">
+            <i class="fas fa-list"></i><br>AsistenciaM
+          </span>
+        </div>
 
           <span id="form-agregar-curso" class="span-formularios">
             <form id="form-agregar-curso">
@@ -187,7 +200,7 @@
                
                 <section class="span-numero-telefono">
                   <span id="cantidad-usuarios-span">Numero de telefono</span>
-                  <input  class="input-group-text input is-primary" type="number" name="telefono" placeholder="+52 312-000-000-000">
+                  <input  class="input-group-text input is-primary" type="number"  name="telefono" placeholder="+52 312-000-000-000">
                 </section>
                 <button type="button" class="btn btn-warning button-vincular" name="rfid" id="VincularRFID"><p id="msjRfid"><i id="iconoRFID" class="far fa-id-card"></i>Vincular tarjeta RFID<p><p id="esperaTag">Pase tag por el lector&nbsp;<i><img id="imgEspera" src="img/loading.gif"></i><p></button><br>
                 <span>Domicilio del empleado</span><br>
@@ -235,6 +248,55 @@
 
     </div>
   </div>
+  <!-------------------------------------Contenido para dispositivos moviles------------------------------------->
+  <!--listado asistencias movile-->
+  <div id="listado_asistencias_para_moviles" class="contenidos_disp_moviles animate__animated">
+
+  </div>
+  <!--Formulario para cursos movile-->
+  <div id="formulario_cursos_para_moviles" class="contenidos_disp_moviles formularios_moviles animate__animated">
+    <form id="form-agregar-curso_movile" class="formularios_movile">
+      <span>Nombre del curso</span> <br><input class="input-group-text input is-rounded is-primary"  name="nombre_curso_movile" type="text" placeholder="Nombre del curso"><br>
+        <span>Ponente</span> <br><input class="input-group-text input is-rounded is-primary"  name="ponente_movile" type="text" placeholder="Ponente"><br><br>
+      <span id="cantidad-usuarios-span"><center>Tomar este curso la proxima vez?</center></span>
+      <center>
+        <span class="btn-group">
+          No&nbsp;
+          <span class="form-check form-switch usu_permitidos">
+            <input class="form-check-input siguiente_switch_movile" type="checkbox" id="flexSwitchCheckDefault"> 
+            Si
+          </span>
+        </span>
+      </center>
+      <br><span>Descripción del curso</span><br>
+      
+      <textarea class="is-primary des_form" maxlength="300" placeholder="Descripción del curso" name ="descripcion_movile"></textarea><br>
+      <button type="button" class="btn btn_primary_own crear_curso_movile"  value=""><i class="far fa-plus-square"></i> Crear</button> <button type="button" class="btn btn_primary_own guardar_cambios_movile"  value="" ><i class="fas fa-save"></i> Guardar</button><button type="button" class="btn btn_warning_own cerrar-formulario-movile" value=""><i class='fas fa-window-close'></i> Cerrar</button>
+    </form>
+  </div>
+
+  <!--Formulario para empleados movile-->
+  <div id="formulario_empleados_para_moviles" class="contenidos_disp_moviles formularios_moviles animate__animated">
+    <form id="form-agregar-empleado-movile" class="formularios_movile">
+      <span>Nombre del empleado</span><br>
+      <input class="input-group-text input is-rounded is-primary"  name="nombre_empleado_movile" type="text" placeholder="Nombre completo del empleado"><br>
+
+      <span>Correo</span><br>
+      <input class="input-group-text input is-rounded is-primary"  name="correo_movile" type="text" placeholder="Correo"><br>
+      <span>Fecha de nacimiento</span><br>
+      <input class="input-group-text input is-rounded is-primary" name="fecha_nacimiento_movile" type="date" placeholder=""><br>
+      <span>Area o departamento</span><br>
+      <input class="input-group-text input is-rounded is-primary" name="area_departamento_movile" type="text" placeholder="Ventas | Almacen"><br>
+      
+      <span id="cantidad-usuarios-span">Numero de telefono</span><br>
+      <input  class="input-group-text input is-rounded is-primary" type="number"  name="telefono_movile" placeholder="+52 312-000-000-000">
+     
+      <button type="button" class="btn btn_warning_own button-vincular-movile" name="rfid" id="VincularRFID_movile"><p id="msjRfid"><i id="iconoRFID" class="far fa-id-card"></i>Vincular tarjeta RFID<p><p id="esperaTag">Pase tag por el lector&nbsp;<i><img id="imgEspera" src="img/loading.gif"></i><p></button><br>
+      <span>Domicilio del empleado</span><br>
+      <input class="input-group-text input is-rounded is-primary" maxlength="100" placeholder="Colima, Cuauhtemoc Emiliano Zapata #222" name="domicilio_movile"><br>
+      <button type="button" class="btn btn_primary_own agregar_empleado_movile"  value=""><i class="far fa-plus-square"></i> Agregar</button><button type="button" class="btn btn_primary_own guardar_cambios_empleado_movile"  value="" ><i class="fas fa-save"></i> Guardar</button><button type="button" class="btn btn_warning_own cerrar-formulario-movile" value=""><i class='fas fa-window-close'></i> Cerrar</button>
+    </form>   
+  </div>
 <center>
   <footer>
     <span id="cabecera-tit-i"> 
@@ -251,10 +313,10 @@
   </footer>
 </center>
 <!--/////////////////////////////////////////////Modales///////////////////////////////////////////////////-->
-  
+    <!--MODAL BORRAR CURSO-->
     <div class="modal modal-borrar-curso">
       <div class="modal-background"></div>
-      <div class="modal-content">
+      <div class="modal-content modal_centrado">
         <div class="card">
           <div class="card-content">
             <div class="media">
@@ -274,8 +336,32 @@
           </div>
         </div>
       </div>
-      <!--<button class="modal-close is-large" aria-label="close"></button>-->
     </div>
+    <!--MODAL BORRAR EMPLEADO-->
+    <div class="modal modal-borrar-empleado">
+      <div class="modal-background"></div>
+      <div class="modal-content  modal_centrado">
+        <div class="card">
+          <div class="card-content">
+            <div class="media">
+              <div class="media-content">
+                <p class="title is-4"><i class="fas fa-user-minus"></i> Deseas borrar este empleado?</p>
+              </div>
+               <div class="media-right">
+                <i class="fas fa-times cerrar_modal" hidden></i>
+              </div>
+            </div>
+
+           <div class="content">
+              <button class="button is-primary is-outlined borrar_empleado">Si borrar</button>
+              <button class="button is-danger is-outlined cerrar_modal">Cancelar</button> 
+              <br>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- MODAL NOTIFICACION CONSTANCIAS -->
     <div class="modal modal-constancia">
       <div class="modal-background"></div>
@@ -301,6 +387,8 @@
       <!--<button class="modal-close is-large" aria-label="close"></button>-->
     </div>
     <!-- FIN MODAL NOTIFICACION CONSTANCIAS -->
+
+    <!--MODAL EXITO-->
     <div class="modal modal-exito">
       <div class="modal-background"></div>
       <div class="modal-content">
@@ -310,11 +398,8 @@
               <div class="media-content">
                 <p class="title is-4"></p>
               </div>
-               <div class="media-right">
-                <i class="fas fa-times cerrar_modal" hidden></i>
-              </div>
             </div>
-            <div class="content botones-modale-exito">
+            <div class="content botones-modales">
               <button class="button is-primary is-outlined cerrar_modal">Ok</button> 
               <br>
             </div>
@@ -323,6 +408,41 @@
       </div>
       <!--<button class="modal-close is-large" aria-label="close"></button>-->
     </div>
+
+    <!--MODAL ASISTENCIA-->
+    <div class="modal modal-asistencia">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <div class="card">
+          <div class="card-content">
+            <div class="media">
+              <div class="media-content">
+               <p class="modal-card-title"></p>
+                <span id="info"></span>
+                <div id="cont_tabla">
+                  <table class="table" id="tabla_en_sa">
+                    <thead>
+                      <tr>
+                        <th><span class="tag is-success">ENTRADA</span></th>
+                        <th><span class="tag is-warning">SALIDA</span></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                     
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="content botones-modales">
+              <button class="button is-primary is-outlined"><i class="fas fa-download"></i>&nbsp;Descargar Constancia</button>
+              <button class="button is-warning  cerrar_modal">Cerrar</button>
+              <br>
+            </div>
+          </div>
+        </div>
+      </div>
+
 </body>
 </html>
 

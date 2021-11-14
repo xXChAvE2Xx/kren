@@ -1,21 +1,275 @@
 $(document).ready(function () {
+
+    //variable para rellenar el listado de una u otra manera
+    let listado_version_movile = false;
+    let estado_lista = '';
+    let table = '';
+    let id_curso_en_detalle = 0;
+    let id_curso_en_datatable = 0;
+    let id_empleado_en_detalle = 0;
+    let id_actual_empleado_en_detalle = 0;
+
     $("#label-actividad-act").hide();
     $(".ocultarTiempoReal").hide();
     $("#esperaTag").hide();
 
+
+
+    $("#plus-agregar-movile").on('click',function(){
+        //vaciamos formulario
+        $("#form-agregar-curso_movile input").val('');
+        $("#form-agregar-curso_movile button").removeAttr('rfid');
+        $("#form-agregar-curso_movile input.siguiente_switch_movile").prop('checked',false);
+        $("#form-agregar-curso_movile textarea").val('');
+
+        
+        //ocultamos el contenido
+        slideOutRight_moviles("div#contenido");
+        //ocultamos botones innecesarios
+        $('button.guardar_cambios_movile').hide();
+        $('button.crear_curso_movile').show();
+        //mostramos el formulario en version para moviles
+        setTimeout(function(){
+            slideInRight_moviles("#formulario_cursos_para_moviles");
+        },500);
+       
+    });
+
+    $(".editar_curso_movile").on('click',function(){
+        //ocultamos el contenido
+        slideOutRight_moviles("div#contenido");
+        if(estado_lista == 'cursos'){//proceso para los cursos
+            //ocultamos botones innecesarios
+            $('button.guardar_cambios_movile').show();
+            $('button.crear_curso_movile').hide();
+            //rellenamos inputs con datos del curso
+            $('input[name="nombre_curso_movile"]').val($("#curso-detalle #titulo-detalle").text());
+            $('input[name="ponente_movile"]').val($("#curso-detalle #ponente").text());
+
+            if($("#curso-detalle #titulo-detalle").attr('siguiente')=='1')
+                $("input.siguiente_switch_movile").prop('checked', true);
+            else
+                $("input.siguiente_switch_movile").prop('checked', false);
+
+            $('textarea[name="descripcion_movile"]').val($("#curso-detalle div#info").text());
+
+
+            //mostramos el formulario en version para moviles
+            setTimeout(function(){
+            slideInRight_moviles("#formulario_cursos_para_moviles");
+            },500);
+        }else if(estado_lista == 'empleados'){//proceso para los empleados empleados
+            //ocultamos botones innecesarios
+            $('button.guardar_cambios_empleado_movile').show();
+            $('button.agregar_empleado_movile').hide();
+            //rellenamos inputs con datos del curso
+            $('input[name="nombre_empleado_movile"]').val($("#curso-detalle #titulo-detalle").text());
+            $('input[name="area_departamento_movile"]').val($("#curso-detalle #ponente").text());
+            $('input[name="correo_movile"]').val($("#curso-detalle #titulo-detalle").attr('correo'));
+            $('input[name="telefono_movile"]').val($("#curso-detalle #titulo-detalle").attr('telefono'));
+            $('input[name="fecha_nacimiento_movile"]').val($("#curso-detalle #titulo-detalle").attr('fecha_nac'));
+            $('input[name="domicilio_movile"]').val($("#curso-detalle #titulo-detalle").attr('domicilio'));
+            $('button[name="rfid"]').attr('rfid', $("#curso-detalle #titulo-detalle").attr('rfid'));
+
+            //mostramos el formulario en version para moviles
+            setTimeout(function(){
+            slideInRight_moviles("#formulario_empleados_para_moviles");
+            },500);
+        }
+    });
+
+    $(".guardar_cambios_empleado").click(function(){
+       let rfid = $('input.button-vincular').attr('rfid');
+       if(rfid == undefined || rfid=='')
+            rfid = 0;
+
+            id_actual_empleado_en_detalle = id_empleado_en_detalle;
+            $.ajax({
+                method: "POST",
+                url: "controladores.php",
+                data: {
+                    axn: "actualizar_empleado",
+                    id_empleado: id_empleado_en_detalle,
+                    nombre_empleado:  $("input[name='nombre_empleado']").val(),
+                    correo: $("input[name='correo']").val(),
+                    fecha_nac: $("input[name='fecha_nacimiento']").val(),
+                    area_departamento: $("input[name='area_departamento']").val(),
+                    telefono: $("input[name='telefono']").val(),
+                    domicilio: $("input[name='domicilio']").val(),
+                    rfid: rfid
+                }
+            }).done(function (data) {
+                if(JSON.parse(data)==true){
+                    $("#form-agregar-empleado input").val('');
+                    $("button[name=rfid]").removeAttr('rfid');
+    
+                    $(".cerrar-formulario").click();
+    
+                    $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Empleado actualizado con exito");
+                    $(".modal-exito").show();
+    
+                    //actualizamos listado
+                    $('.list-group li').remove();
+                    estado_lista ='';
+                    listado_empleados();
+                       
+                }
+    
+              
+            });
+
+    });
+
+
+    $(".guardar_cambios_movile").on('click',function(){
+        //peticion para actualizar datos
+        $.ajax({
+            method: "POST",
+            url: "controladores.php",
+            data: {
+                axn: "actualizar_curso",
+                id_curso: id_curso_en_detalle,
+                nombre_curso: $('input[name="nombre_curso_movile"]').val(),
+                ponente: $('input[name="ponente_movile"]').val(),
+                descripcion: $('textarea[name="descripcion_movile"]').val(),
+                siguiente: $("input.siguiente_switch_movile").prop('checked')
+            }
+        }).done(function (data) {
+            if(JSON.parse(data)==true){
+                $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Curso actualizado con exito");
+                $(".modal-exito").show();
+                $("#form-agregar-curso_movile input").val('');
+                $("#form-agregar-curso_movile textarea").val('');
+                $("#form-agregar-curso_movile input.siguiente_switch_movile").prop('checked', false);
+                $(".cerrar-formulario-movile").click();
+            }
+        });
+        
+    });
+
+    
+
+    
+    $("#plus-agregar-empleado-movile").on('click',function(){
+        //ocultamos el contenido
+        slideOutRight_moviles("div#contenido");
+        //ocultamos botones innecesarios
+        $('button.guardar_cambios_empleado_movile').hide();
+        $('button.agregar_empleado_movile').show();
+        //vaciamos formulario
+        $('#form-agregar-empleado-movile input').val('');
+        $('#form-agregar-empleado-movile button#VincularRFID_movile').removeAttr('rfid');
+        //mostramos el formulario en version para moviles
+        setTimeout(function(){
+            slideInRight_moviles("#formulario_empleados_para_moviles");
+        },500);
+       
+    });
+
+    /*boton crear del formulario de cursos en dispositivos moviles*/
+    $(".crear_curso_movile").on('click',function(){
+        if ($("input[name='nombre_curso_movile']").val() != '' && $("input[name='ponente_movile']").val() != ''  && $("textarea[name='descripcion_movile']").val() != '') 
+        crear_curso(true);
+        else {
+            $(".modal-exito .title").html("<i class='fas fa-times'></i> Datos incompletos");
+            $(".modal-exito").show();
+        }
+    });
+
+    /*boton agregar del formulario  de empleados en dispositivos moviles*/
+    $(".agregar_empleado_movile").on('click',function(){
+        if ($("input[name='nombre_empleado_movile']").val() != '' && $("input[name='correo_movile']").val() != '' && $("input[name='fecha_nacimiento_movile']").val() != '' && $("input[name='area_departamento_movile']").val() != '' && $("input[name='telefono_movile']").val() != '' && $("input[name='domicilio_movile']").val() != '') 
+            agregar_empleado(true); 
+        else {
+            $(".modal-exito .title").html("<i class='fas fa-times'></i> Datos incompletos");
+            $(".modal-exito").show();
+            console.log('/');
+        }
+    });
+
+    $("button.guardar_cambios_empleado_movile").on('click',function(){
+        id_actual_empleado_en_detalle = id_empleado_en_detalle;
+        $.ajax({
+            method: "POST",
+            url: "controladores.php",
+            data: {
+                axn: "actualizar_empleado",
+                id_empleado: id_empleado_en_detalle,
+                nombre_empleado: $('input[name="nombre_empleado_movile"]').val(),
+                correo: $('input[name="correo_movile"]').val(),
+                fecha_nac: $('input[name="fecha_nacimiento_movile"]').val(),
+                area_departamento: $('input[name="area_departamento_movile"]').val(),
+                telefono: $('input[name="telefono_movile"]').val(),
+                domicilio: $('input[name="domicilio_movile"]').val(),
+                rfid: $('#form-agregar-empleado-movile button[name="rfid"]').attr('rfid')
+            }
+        }).done(function (data) {
+            if(JSON.parse(data)==true){
+                $("#form-agregar-empleado-movile input").val('');
+                $("button[name=rfid]").removeAttr('rfid');
+
+                $(".cerrar-formulario-movile").click();
+
+                $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Empleado actualizado con exito");
+                $(".modal-exito").show();
+
+                //actualizamos listado
+                $('.list-group li').remove();
+                estado_lista ='';
+                listado_empleados();
+                   
+            }
+
+          
+        });
+    });
+
+    //boton del listado de asistencias en version movile
+    $("#listado_asistencias-movile").on('click',function(){
+        if(estado_lista=='empleados')//si la lista esta en los empleados se redirige a los cursos
+            $("button.btn_lista_cursos").click();
+        listado_version_movile = true;//activa version movile
+        //esconder elementos
+        backoutright('#agregar-curso');
+        backoutright('#actividad-actual');
+        //despues de la animacion llamamos a la funcion que mostrara datatable
+        setTimeout(function () {
+            listado_asistencias(id_curso_en_detalle);
+        }, 400);
+    });
+
+   
+
+
+    $(".cerrar-formulario-movile").on('click',function(){
+      
+
+         //ocultamos el contenido
+         slideOutRight_moviles(".formularios_moviles");
+         //ocultamos botones innecesarios
+        // $('button.guardar_cambios_movile').hide();
+         //mostramos el formulario en version para moviles
+         setTimeout(function(){
+             slideInRight_moviles("div#contenido");
+         },500);
+        
+
+    });
+    
+
     $('input.barra-busqueda').attr('placeholder', 'Buscar curso ó ponente');
-    let estado_lista = '';
-    let table = '';
+    
     //llamamos a la funcion para listar los cursos
     listado_cursos();
     //ocultamos formularios el de cursos se oculta solo en listado_curso()
     $("#form-agregar-empleado").hide();
-    let id_curso_en_detalle = 0;
-    let id_curso_en_datatable = 0;
+    
 
 
     //muestra los detalles de un curso
     function mostrar_curso_detalle(id_curso) {
+        $("button.editar_curso").attr('title','Editar este curso');
+        $("button.confirm_borrar_curso").attr('title','Borrar este curso');
         if (id_curso_en_detalle == id_curso) return false;
         $.ajax({
             method: "POST",
@@ -105,9 +359,9 @@ $(document).ready(function () {
                         $(".iniciar_curso").attr("id_curso", id_curso_en_detalle);
                     }
                 }
-                
-                
+
             }
+            
 
            
             //Descarga de constancias masivas
@@ -181,8 +435,53 @@ $(document).ready(function () {
     
         })
     }
-    //listado los empleados
+    //muestra el detalle de los empleados
+    function mostrar_empleado_detalle(id_empleado){
+       
+            $("#titulo-detalle").html('<i class="fas fa-user" title="Nombre del empleado"></i> '+$("li[id_empleado="+id_empleado+"] .nombre_empleado").text());
+            $("#ponente").html('<i class="fas fa-briefcase" title="Area"></i> '+$("li[id_empleado="+id_empleado+"] .area").text());
+            $("button.editar_curso").attr('title','Editar este empleado');
+            $("button.confirm_borrar_curso").attr('title','Borrar este empleado');
+            
+            $.ajax({
+                method: "POST",
+                url: "controladores.php",
+                data: {
+                    axn: "info_empleado",
+                    id_empleado: id_empleado
+                }
+            }).done(function (data) {
+
+                id_empleado_en_detalle = id_empleado;
+                //gaurdado de valores en atributos
+                $("#titulo-detalle").attr('correo',JSON.parse(data)[4]);
+                $("#titulo-detalle").attr('fecha_nac',JSON.parse(data)[3]);
+                $("#titulo-detalle").attr('telefono',JSON.parse(data)[2]);
+                $("#titulo-detalle").attr('domicilio',JSON.parse(data)[5]);
+                $("#titulo-detalle").attr('rfid',JSON.parse(data)[7]);
+
+                //rellenar valores en detalle
+                $("#info").empty();
+                $("#info").append('<font color="#ffc107">Edad: </font>'+JSON.parse(data)[1]+'');
+                $("#info").append('<br><font color="#ffc107">Telefono: </font>'+JSON.parse(data)[2]);
+                $("#info").append('<br><font color="#ffc107">Fecha de nacimiento: </font>'+JSON.parse(data)[3]);
+                $("#info").append('<br><font color="#ffc107">Correo: </font>'+JSON.parse(data)[4]);
+                $("#info").append('<br><font color="#ffc107">Domicilio: </font>'+JSON.parse(data)[5]);
+                
+                if(JSON.parse(data)[7]==''||JSON.parse(data)[7]=='0') 
+                    $("#info").append('<br><font color="#ffc107">RFID: </font><font color="#3dd6af">Sin RFID vinculado</font>');
+                else
+                    $("#info").append('<br><font color="#ffc107">RFID: </font>'+JSON.parse(data)[7]);
+                
+                $(".det_curso span").text('');
+            });
+        
+
+    }
+
+    //listado de los empleados
     function listado_empleados() {
+        
         if (estado_lista != 'empleados') {
             $('.list-group').empty();
             estado_lista = 'empleados';
@@ -195,99 +494,182 @@ $(document).ready(function () {
                 axn: "listado_empleados"
             }
         }).done(function (data) {
-            //mostramos el primer empleado en detalle
-            /* mostrar_curso_detalle(JSON.parse(data)[1]);
-             id_curso_en_detalle = JSON.parse(data)[1];*/
+           
+             id_empleado_en_detalle = JSON.parse(data)[1];
             for (var i = 1; JSON.parse(data)[i] != null; i = i + 3) {
                 //comprueba que no exista el elemento actual
                 if ($("li[id_empleado=" + JSON.parse(data)[i] + "]").text() == '') {
-                    $(".list-group").append('<li id_empleado="' + JSON.parse(data)[i] + '" class="list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto"><div class="fw-bold nombre_empleado" id_empleado="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 1] + '</div>Area: <span class="area" id_empleado="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 2] + '</span></div> <span class="badge rounded-pill ver-empleado" id_curso="' + JSON.parse(data)[i] + '"><i class="fas fa-eye"></i></span></li');
+                    $(".list-group").append('<li id_empleado="' + JSON.parse(data)[i] + '" class="list-group-item d-flex justify-content-between align-items-start"><div class="ms-2 me-auto"><div class="fw-bold nombre_empleado" id_empleado="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 1] + '</div>Area: <span class="area" id_empleado="' + JSON.parse(data)[i] + '">' + JSON.parse(data)[i + 2] + '</span></div> <span class="badge rounded-pill ver-empleado" id_empleado="' + JSON.parse(data)[i] + '"><i class="fas fa-eye"></i></span></li');
                 }
             }
-            /*$(".ver-curso").click(function(){
-               $("#form-agregar-curso").hide();
-               $("#agregar-curso").css('background-color','#6e7275a8');
-               $(".selector_opc").show();
-               
-               mostrar_curso_detalle($(this).attr('id_curso'));
-            });*/
+            //mostramos el primer empleado en detalle
+            mostrar_empleado_detalle(JSON.parse(data)[1]);
+            if(id_actual_empleado_en_detalle!=0) {   
+                console.log('id_actual'+id_actual_empleado_en_detalle);
+                //dejamos el mismo usuario que estaba antes de la actualización (osea el mismo que se actuualizo)
+                mostrar_empleado_detalle(id_actual_empleado_en_detalle);
+                id_actual_empleado_en_detalle = 0;//IMPORTANTE: resetear esta variable a 0
+            }
+           
+            if($(".editar_curso_movile").css('display') == 'inline-block')
+            {
+                $(".ver-empleado").click(function(){ //funcion para moviles
+                    mostrar_empleado_detalle($(this).attr('id_empleado'));
+                });
+            }else{
+                $(".ver-empleado").click(function(){ //funcion para desktop
+                    if($("#form-agregar-empleado").css('display')=='block') 
+                        $(".cerrar-formulario").click();
+                    //mostramos el detalle del empleado correspondiente
+                    mostrar_empleado_detalle($(this).attr('id_empleado'));
+                });
+            }
         })
     }
     //crea un curso nuevo
-    function crear_curso() {
-        $.ajax({
-            method: "POST",
-            url: "controladores.php",
-            data: {
-                axn: "crear_curso",
-                nombre: $("input[name='nombre_curso']").val(),
-                ponente: $("input[name='ponente']").val(),
-            siguiente: $('.siguiente_switch').prop('checked'),
-                descripcion: $("textarea[name='descripcion']").val()
-            }
-        }).done(function (data) {
-            if (JSON.parse(data) == true) {
-                estado_lista = '';
-                listado_cursos();
-                $("#form-agregar-curso input").val('');
-                $("#form-agregar-curso textarea").val('');
-                $(".siguiente_switch").prop('checked',false)
-                $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Curso agregado con exito");
-                $(".modal-exito").show();
-            } else {
-                $(".modal-exito .title").html("<i class='fas fa-times'></i> Error al agregar el curso");
-                $(".modal-exito").show();
-            }
-        })
+    function crear_curso(opc) {
+        if(opc == false)//si es la version para escritorio
+        {
+            $.ajax({
+                method: "POST",
+                url: "controladores.php",
+                data: {
+                    axn: "crear_curso",
+                    nombre: $("input[name='nombre_curso']").val(),
+                    ponente: $("input[name='ponente']").val(),
+                siguiente: $('.siguiente_switch').prop('checked'),
+                    descripcion: $("textarea[name='descripcion']").val()
+                }
+            }).done(function (data) {
+                if (JSON.parse(data) == true) {
+                    estado_lista = '';
+                    listado_cursos();
+                    $("#form-agregar-curso input").val('');
+                    $("#form-agregar-curso textarea").val('');
+                    $(".siguiente_switch").prop('checked',false)
+                    $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Curso agregado con exito");
+                    $(".modal-exito").show();
+                } else {
+                    $(".modal-exito .title").html("<i class='fas fa-times'></i> Error al agregar el curso");
+                    $(".modal-exito").show();
+                }
+            })
+        }else if(opc == true){//si es la version para dispositivos moviles
+            $.ajax({
+                method: "POST",
+                url: "controladores.php",
+                data: {
+                    axn: "crear_curso",
+                    nombre: $("input[name='nombre_curso_movile']").val(),
+                    ponente: $("input[name='ponente_movile']").val(),
+                    siguiente: $('.siguiente_switch_movile').prop('checked'),
+                    descripcion: $("textarea[name='descripcion_movile']").val()
+                }
+            }).done(function (data) {
+                if (JSON.parse(data) == true) {
+                    estado_lista = '';
+                    listado_cursos();
+                    $("#form-agregar-curso_movile input").val('');
+                    $("#form-agregar-curso_movile textarea").val('');
+                    $(".siguiente_switch_movile").prop('checked',false)
+                    $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Curso agregado con exito");
+                    $(".modal-exito").show();
+                } else {
+                    $(".modal-exito .title").html("<i class='fas fa-times'></i> Error al agregar el curso");
+                    $(".modal-exito").show();
+                }
+            })
+        }
     }
     //agrega un nuevo empleado
-    function agregar_empleado() {
-        $.ajax({
-            method: "POST",
-            url: "controladores.php",
-            data: {
-                axn: "agregar_empleado",
-                nombre: $("input[name='nombre_empleado']").val(),
-                correo: $("input[name='correo']").val(),
-                fecha_nacimiento: $("input[name='fecha_nacimiento']").val(),
-                area_departamento: $("input[name='area_departamento']").val(),
-                telefono: $("input[name='telefono']").val(),
-                domicilio: $("input[name='domicilio']").val(),
-                id_RFID: $("#VincularRFID").attr("RFID")
-            }
-        }).done(function (data) {
-            var datas = data.trim();
-            if (datas == "true") {
-                $("#form-agregar-empleado input").val('');
+    function agregar_empleado(opc) {
+        if(opc == false)//si es la version para escritorio
+        {
+            $.ajax({
+                method: "POST",
+                url: "controladores.php",
+                data: {
+                    axn: "agregar_empleado",
+                    nombre: $("input[name='nombre_empleado']").val(),
+                    correo: $("input[name='correo']").val(),
+                    fecha_nacimiento: $("input[name='fecha_nacimiento']").val(),
+                    area_departamento: $("input[name='area_departamento']").val(),
+                    telefono: $("input[name='telefono']").val(),
+                    domicilio: $("input[name='domicilio']").val(),
+                    id_RFID: $("#VincularRFID").attr("RFID")
+                }
+            }).done(function (data) {
+                var datas = data.trim();
+                if (datas == "true") {
+                    $("#form-agregar-empleado input").val('');
 
-                $("#VincularRFID").removeAttr("RFID")
-                $("#VincularRFID").removeClass("btn-success");
-                $("#VincularRFID").addClass("btn-warning");
-                $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Empleado agregado con exito");
+                    $("#VincularRFID").removeAttr("RFID")
+                    $("#VincularRFID").removeClass("btn-success");
+                    $("#VincularRFID").addClass("btn-warning");
+                    $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Empleado agregado con exito");
+                    $(".modal-exito").show();
+                    estado_lista = '';
+                    listado_empleados();
+                } else {
+                    $(".modal-exito .title").html("<i class='fas fa-times'></i> Error al agregar el empleado");
+                    $(".modal-exito").show();
+                }
+            }) 
+        }else if(opc == true){//si es la version para dispositivos moviles
+            if($("#VincularRFID_movile").attr("RFID")==undefined)
+            {
+                $(".modal-exito .title").html("No has vinculado un RFID, presiona el boton 'Vincular tarjeta RFID' y despues pasa la tarjeta");
                 $(".modal-exito").show();
-                estado_lista = '';
-                listado_empleados();
-            } else {
-                $(".modal-exito .title").html("<i class='fas fa-times'></i> Error al agregar el empleado");
-                $(".modal-exito").show();
+                return false;
+            }else{
+                $.ajax({
+                    method: "POST",
+                    url: "controladores.php",
+                    data: {
+                        axn: "agregar_empleado",
+                        nombre: $("input[name='nombre_empleado_movile']").val(),
+                        correo: $("input[name='correo_movile']").val(),
+                        fecha_nacimiento: $("input[name='fecha_nacimiento_movile']").val(),
+                        area_departamento: $("input[name='area_departamento_movile']").val(),
+                        telefono: $("input[name='telefono_movile']").val(),
+                        domicilio: $("input[name='domicilio_movile']").val(),
+                        id_RFID: $("#VincularRFID_movile").attr("RFID")
+                    }
+                }).done(function (data) {
+                    var datas = data.trim();
+                    if (datas == "true") {
+                        $("#form-agregar-empleado-movile input").val('');
+
+                        $("#VincularRFID_movile").removeAttr("RFID")
+                        $("#VincularRFID_movile").removeClass("btn-success");
+                        $("#VincularRFID_movile").addClass("btn-warning");
+                        $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Empleado agregado con exito");
+                        $(".modal-exito").show();
+                        estado_lista = '';
+                        listado_empleados();
+                    } else {
+                        $(".modal-exito .title").html("<i class='fas fa-times'></i> Error al agregar el empleado");
+                        $(".modal-exito").show();
+                    }
+                }) 
             }
-        })   
+        }  
     }
 
     function filtrar_listado() {
         var busqueda = $('input.barra-busqueda').val();
-        if (estado_lista == 'cursos') {
+        if (estado_lista == 'cursos') {//filtrado para cursos
             $('.list-group li').each(function (index) {
-                if ($(this).first().text().replace('Ponente:', '').indexOf(busqueda) >= 0) {
+                if ($(this).first().text().replace('Ponente:', '').toLowerCase().indexOf(busqueda.toLowerCase()) >= 0) {
                     $('li[id_curso=' + $(this).attr('id_curso') + ']').attr("style", "display: flex !important");
                 } else {
                     $('li[id_curso=' + $(this).attr('id_curso') + ']').attr("style", "display: none !important");
                 }
             });
         }
-        if (estado_lista == 'empleados') {
+        if (estado_lista == 'empleados') {//filtrado para empleados
             $('.list-group li').each(function (index) {
-                if ($(this).first().text().replace('Area:', '').indexOf(busqueda) >= 0) {
+                if ($(this).first().text().replace('Area:', '').toLowerCase().indexOf(busqueda.toLowerCase()) >= 0) {
                     $('li[id_empleado=' + $(this).attr('id_empleado') + ']').attr("style", "display: flex !important");
                 } else {
                     $('li[id_empleado=' + $(this).attr('id_empleado') + ']').attr("style", "display: none !important");
@@ -352,15 +734,11 @@ $(document).ready(function () {
 
     });
     $("#plus-agregar-empleado").click(function () {
-        /* $(".selector_opc").hide();
-         $("#agregar-curso").css('background-color', '#ffffff00');
+        
+        
          $("button.guardar_cambios_empleado").hide();
          $("button.agregar_empleado").show();
-         $("#form-agregar-empleado").show();
-         window.scrollTo(0, 1000);*/
-
-
-
+       
 
         window.scrollTo(0, 1000);
 
@@ -399,7 +777,7 @@ $(document).ready(function () {
 
 
             $("#agregar-curso").addClass('animate__bounceInRight');
-            $("#agregar-curso").css('background-color', '#6e7275a8');
+            $("#agregar-curso").css('background-color', '#1d2f39b5');
             $(".selector_opc").show();
             $("#esperaTag").hide();
             $("#msjRfid").show();
@@ -419,7 +797,11 @@ $(document).ready(function () {
 
     });
     $(".confirm_borrar_curso").click(function () {
-        $(".modal-borrar-curso").css('display', 'block');
+        if(estado_lista=='cursos'){
+            $(".modal-borrar-curso").css('display', 'block');
+        }else if(estado_lista=='empleados'){
+            $(".modal-borrar-empleado").css('display', 'block');
+        }
     });
     $(".borrar_curso").click(function () {
         $(".modal").css('display', 'none');
@@ -446,20 +828,43 @@ $(document).ready(function () {
             }
         })
     });
+
+    $(".borrar_empleado").click(function () {
+        $(".modal").css('display', 'none');
+        $.ajax({
+            method: "POST",
+            url: "controladores.php",
+            data: {
+                axn: "borrar_empleado",
+                id_empleado: id_empleado_en_detalle
+            }
+        }).done(function (data) {
+            if(JSON.parse(data)==true)
+            {
+                $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Empleado borrado con exito");
+                $(".modal-exito").show();
+                estado_lista = '';
+                listado_empleados();
+            }
+        })
+    });
+
+
     $(".cerrar_modal").click(function () {
         $(".modal").css('display', 'none');
     });
     $(".crear_curso").click(function () {
-
+            /*comprobaciones de inoputs vacios*/
             if ($("input[name='nombre_curso']").val() != '' && $("input[name='ponente']").val() != ''  && $("textarea[name='descripcion']").val() != '') 
-            crear_curso();
+            crear_curso(false);
             else {
                 $(".modal-exito .title").html("<i class='fas fa-times'></i> Datos incompletos");
                 $(".modal-exito").show();
             }
     });
     $(".agregar_empleado").click(function () {
-        if ($("input[name='nombre_empleado']").val() != '' && $("input[name='correo']").val() != '' && $("input[name='fecha_nacimiento']").val() != '' && $("input[name='area_departamento']").val() != '' && $("input[name='telefono']").val() != '' && $("input[name='domicilio']").val() != '') agregar_empleado();
+        if ($("input[name='nombre_empleado']").val() != '' && $("input[name='correo']").val() != '' && $("input[name='fecha_nacimiento']").val() != '' && $("input[name='area_departamento']").val() != '' && $("input[name='telefono']").val() != '' && $("input[name='domicilio']").val() != '') 
+        agregar_empleado(false);
         else {
             $(".modal-exito .title").html("<i class='fas fa-times'></i> Datos incompletos");
             $(".modal-exito").show();
@@ -469,40 +874,43 @@ $(document).ready(function () {
 
 
     $('.editar_curso').click(function () {
-        //solo si el formulario ya esta mostrandose
-        if ($('#form-agregar-curso').css('display') != 'none') {
-            //solo si el formulario no esta vacio
-            if($('input[name=nombre_curso]').val() != ''){
-                 shake('#agregar-curso');//hacemos un focus para el usuario
-                 return false;
-            }else{
-                bouncein('#agregar-curso');
-                //rellenamos los datos correspondientes en el formulario
-                $("input[name='nombre_curso']").val($('span#titulo-detalle').text());
-                $("input[name='ponente']").val($('span#ponente').text());
-                $('textarea.des_form').text($('#info').text());
-                //colocamos los botones correspondientes
-                $("button.guardar_cambios").show();
-                $("button.crear_curso").hide();
-                //checkeamos el switch segun corresponda
-                if($('#titulo-detalle').attr('siguiente')==1)
-                     $('.siguiente_switch').prop('checked', true);
-                else
-                     $('.siguiente_switch').prop('checked', false);
-                return false;
+        if(estado_lista == 'cursos'){//proceso para cursos
+            if ($('#form-agregar-curso').css('display') != 'none') { //solo si el formulario ya esta mostrandose
+                //solo si el formulario no esta vacio
+                if($('input[name=nombre_curso]').val() != ''){
+                    shake('#agregar-curso');//hacemos un focus para el usuario
+                    return false;
+                }else{
+                    bouncein('#agregar-curso');
+                    //rellenamos los datos correspondientes en el formulario
+                    $("input[name='nombre_curso']").val($('span#titulo-detalle').text());
+                    $("input[name='ponente']").val($('span#ponente').text());
+                    $('textarea.des_form').text($('#info').text());
+                    //colocamos los botones correspondientes
+                    $("button.guardar_cambios").show();
+                    $("button.crear_curso").hide();
+                    //checkeamos el switch segun corresponda
+                    if($('#titulo-detalle').attr('siguiente')==1)
+                        $('.siguiente_switch').prop('checked', true);
+                    else
+                        $('.siguiente_switch').prop('checked', false);
+                    return false;
+                }
             }
-        }
-        //si el datatable esta mostrandoce
+            //si el datatable esta mostrandoce
         if ($('#example_wrapper').css('display') == 'block')
             $('.ocultar-asistencias').click();//ocultamos el datatable
 
         window.scrollTo(0, 1000);//scroll para dispositivos moviles
         backoutright("#agregar-curso");//ocultamos el div de los formularios
-        //reseteamos elementos
+        //ocultamos los botnes de opciones
         setTimeout(function () {
             $(".selector_opc").hide();
             $("#agregar-curso").css('background-color', '#ffffff00');
-            $("#form-agregar-curso").show();//mostramos el formulario correspondiente
+         
+                $("#form-agregar-curso").show();//mostramos el formulario correspondiente
+           
+
             backinright("#agregar-curso");
         }, 400);
 
@@ -512,14 +920,40 @@ $(document).ready(function () {
         $('textarea.des_form').text($('#info').text());
 
         //checkeamos el switch segun corresponda
-        if ($("#titulo-detalle").attr('siguiente') == '1') 
+        if($("#titulo-detalle").attr('siguiente') == '1') 
             $('input.siguiente_switch').prop('checked', true);
         else 
             $('input.siguiente_switch').prop('checked', false);
         
-        //ocultamos botones del formulario segun corresponda
+        //botones correspondientes
         $("button.crear_curso").hide();
         $("button.guardar_cambios").show();
+    }else if(estado_lista == 'empleados'){//proceso para empleados
+
+        backoutright("#agregar-curso");//ocultamos el div de los formularios
+
+        //rellenamos formulario
+        $("input[name='nombre_empleado']").val($('#titulo-detalle').text());
+        $("input[name='correo']").val($('#titulo-detalle').attr('correo'));
+        $("input[name='area_departamento']").val($('span#ponente').text());
+        $("input[name='fecha_nacimiento']").val($('#titulo-detalle').attr('fecha_nac'));
+        $("input[name='telefono']").val($('#titulo-detalle').attr('telefono'));
+        $("input[name='domicilio']").val($('#titulo-detalle').attr('domicilio'));
+
+        $("button.agregar_empleado").hide();
+        $("button.guardar_cambios_empleado").show();
+
+        //ocultamos botones de opciones
+        setTimeout(function () {
+            $(".selector_opc").hide();
+            $("#agregar-curso").css('background-color', '#ffffff00');
+            $("#form-agregar-empleado").show();//mostramos el formulario correspondiente
+            
+            backinright("#agregar-curso");
+        }, 400);
+
+    }
+
     });
 
 
@@ -552,23 +986,27 @@ $(document).ready(function () {
                 $("#form-agregar-curso textarea").val('');
                 //oculta formulario
                 $("#form-agregar-curso").hide();
-                $("#agregar-curso").css('background-color', '#6e7275a8');
+                $("#agregar-curso").css('background-color', '#1d2f39b5');
                 $(".selector_opc").show();
             }
         })
     });
     $(".btn_lista_empleados").click(function () {
+        if($("#example_wrapper").css('display')!='none')$("button.boton-volver-asistencias").click();//oculta las asistencias si estan mostrandose y si le dan click al boton de empleados
         $('input.barra-busqueda').attr('placeholder', 'Buscar empleado ó area');
         listado_empleados();
+        if($('#form-agregar-curso').css('display') == 'block') $('button.cerrar-formulario').click();
     });
     $(".btn_lista_cursos").click(function () {
+        id_curso_en_detalle = '';
         $('input.barra-busqueda').attr('placeholder', 'Buscar curso ó ponente')
         listado_cursos();
+        if($('#form-agregar-empleado').css('display') == 'block') $('button.cerrar-formulario').click();
     });
     $("input.barra-busqueda").keyup(function () {
         filtrar_listado();
     });
-
+    //version para escritorio
     $("#VincularRFID").on("click", function () {
 
         $.ajax({
@@ -617,7 +1055,7 @@ $(document).ready(function () {
         })
 
     });
-
+   
     var tiempoReal = "";
     $(".mostrarTiempoReal").on("click", function () {
         $("#label-actividad-act").show();
@@ -760,6 +1198,47 @@ $(document).ready(function () {
     }
 
 
+    function fun_btn_info_asistencia(){
+        $(".btn_info_asistencia").on('click',function(){
+            let area = $(this).attr('area');
+            let empleado = $(this).attr('empleado');
+            let curso = $("li.lista_seleccionado div.nombre_curso").text();
+            //recuperacion de asistencias de un usuario en especifico en un curso especifico
+            $.ajax({
+                method: "POST",
+                url: "controladores.php",
+                data: {
+                    axn: "asistencias_empleado_curso_especifico",
+                    id_empleado: $(this).attr('id_empleado'),
+                    id_curso: id_curso_en_detalle
+                }
+            }).done(function (data) {
+               
+                if(data != 'ERROR')
+                {
+                    //JSON.parse(data);
+                    $(".modal-asistencia .modal-card-title").html('<b><i class="fas fa-info-circle"></i>&nbsp;Información de asistencias</b>'); 
+                    $(".modal-asistencia span#info").html("<br>Empleado:&nbsp;"+empleado+"<br>Area:&nbsp;"+area);
+                    $(".modal-asistencia span#info").append("<br>Curso:&nbsp;"+curso);
+                    $(".modal-asistencia tbody").empty();
+                    let tamaño = JSON.parse(data).length/2;
+                    console.log(tamaño);
+                    for(let i=0;i<tamaño;i++){
+                        $(".modal-asistencia tbody").append("<tr><th>"+JSON.parse(data)[i]+"</th><th>"+JSON.parse(data)[i+1]+"</th></tr>");
+                    }
+                  
+
+
+                    $(".modal-asistencia").show();
+                }
+               
+            });
+
+           
+        });
+    }
+
+
     //-------------------------------------------------------------------Animaciones--------------------------------------------------------------*/
 
     //realiza un focus para el usuario (con animacion)
@@ -794,6 +1273,25 @@ $(document).ready(function () {
             }, 400
         );
     }
+
+    //oculta elementos hacia la derecha (solo funciona en dispositivos moviles)
+    function slideOutRight_moviles(selector){
+        $(selector).addClass('animate__slideOutRight_own');
+        setTimeout(function(){
+            $(selector).hide();
+            $(selector).removeClass('animate__slideOutRight_own');
+        },500);
+    }
+
+    //muestra elementos desde la izquierda (solo funciona en dispositivos moviles)
+    function slideInRight_moviles(selector){
+        $(selector).show();
+        $(selector).addClass('animate__slideInRight_own');
+        setTimeout(function(){
+            $(selector).removeClass('animate__slideInRight_own');
+        },500);
+    }
+
     //muestra elementos con animacion desde la derecha
     function backinright(selector) {
         $(selector).show();
@@ -823,6 +1321,10 @@ $(document).ready(function () {
     //optimizada
     //llena del datatable
     function llenado_datatable(id_curso_a_mostrar) {
+        if(listado_version_movile == true)//verificamos la version (moviles/desktop) para intercambiar la cabecera de la tabla
+        {
+            $("table#example thead").html('<tr><th>Empleado</th><th>Opciones</th></tr>');
+        }
         $.ajax({
             method: "POST",
             url: "controladores.php",
@@ -831,25 +1333,30 @@ $(document).ready(function () {
                 id_curso: id_curso_a_mostrar
             }
         }).done(function (data) {
-            //estoy comprando cuando el curso falla por que no tiene registros
-            
-            id_curso_en_datatable = id_curso_a_mostrar;
+            id_curso_en_datatable = id_curso_a_mostrar;//actualiza la variable del id del curso mostrado en el datatable
             let i = 0;
-            while (i < JSON.parse(data).length) {
+            let id_empleado = 0;
+            while (i < JSON.parse(data).length){//recorre todos los valores del JSON
                 if(JSON.parse(data)!='ERROR')
                 {
-                    
-                    $("table#example tbody").append('<tr><td>' + JSON.parse(data)[i + 1] + '</td><td>' + JSON.parse(data)[i + 2] + '</td><td><span class="tag is-success" title="Fecha y hora de entrada de esta asistencia">'+JSON.parse(data)[i + 3]+'</span></td><td><span class="tag is-danger" title="Fecha y hora de salida de esta asistencia">'+JSON.parse(data)[i + 4]+'</span></td><td><button  class="button is-rounded is-primary btn_download_constancia"><i class="fas fa-download"></i></button></td></tr>');
+                    if(listado_version_movile == true){//verificamos la version (moviles/desktop) para intercambiar llenado del datatable
+                        if(id_empleado != JSON.parse(data)[i])
+                        {
+                            $("table#example tbody").append('<tr><td>' + JSON.parse(data)[i + 1] + '</td><td><button area="'+JSON.parse(data)[i + 2]+'" empleado="'+JSON.parse(data)[i + 1]+'" id_empleado="'+JSON.parse(data)[i]+'" class="button is-rounded is-primary btn_info_asistencia"><i class="fas fa-chevron-right"></i></button></td></tr>');
+                            id_empleado = JSON.parse(data)[i];
+                        }
+                    }else
+                        $("table#example tbody").append('<tr><td>' + JSON.parse(data)[i + 1] + '</td><td>' + JSON.parse(data)[i + 2] + '</td><td><span class="tag is-success" title="Fecha y hora de entrada de esta asistencia">'+JSON.parse(data)[i + 3]+'</span></td><td><span class="tag is-danger" title="Fecha y hora de salida de esta asistencia">'+JSON.parse(data)[i + 4]+'</span></td><td><button  class="button is-rounded is-primary btn_download_constancia"><i class="fas fa-download"></i></button></td></tr>');
                 }
                 i = i + 5;
 
-                //si ya se termino de rellenar el datatable
-                if (i == JSON.parse(data).length) {
+                
+                if (i == JSON.parse(data).length) {//si ya se termino de rellenar el datatable
                     $('table').show();
-                    //si no existe un datatable actualmente
-                    if ($('#example_wrapper').length == 0) {
-                        //descargar asistencias
-                        $(".btn_download_constancia").on('click',function(){
+                    
+                    if ($('#example_wrapper').length == 0) {//si no existe un datatable actualmente
+                        
+                        $(".btn_download_constancia").on('click',function(){//descargar asistencias
 
                             var nombre = $(this).parent().prev().prev().prev().prev().text();
                             var nom_curso = $('div.nombre_curso[id_curso='+id_curso_en_datatable+']').text();
@@ -858,28 +1365,7 @@ $(document).ready(function () {
                             var area  = $(this).parent().prev().prev().prev().text();
                             window.open("constancia.php?nombre="+nombre+"&entrada="+entrada+"&nom_curso="+nom_curso+"&salida="+salida+"&area="+area, 'Constancia de '+nombre, 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=200,left = 390,top = 50');
 
-                            /*$.ajax({
-                                type: "POST",
-                                url: "constancia.php",
-                                data: {
-                                    
-                                },
-                                dataType: "text",
-                                success: function (response) {
-                                   console.log("Se esta descargando el pdf"); 
-                                },
-                                error: function (jqXHR, textStatus, errorThrown){
-                                    console.log(textStatus);
-
-                                }
-                            });*/
-
-                            /*console.log('IMPRESION DE DATOS PARA LA CONTANCIA:')
-                            console.log('Nombre: '+$(this).parent().prev().prev().prev().text());
-                            console.log('Area: '+$(this).parent().prev().prev().prev().prev().text());
-                            console.log('Entrada: '+$(this).parent().prev().prev().text());
-                            console.log('Salida: '+$(this).parent().prev().text());
-                            console.log($('div.nombre_curso[id_curso='+id_curso_en_datatable+']').text());*/
+                           
                         });
                         //genera el datatable
                         generar_datatable();
@@ -891,6 +1377,8 @@ $(document).ready(function () {
                         fun_volver_datatable();
                         //selecciona el li correspondiente
                         fun_seleccionar_li(id_curso_a_mostrar);
+                        //declara funcion onclick del boton para ver informacionde asistencia
+                        fun_btn_info_asistencia();
 
                     } else {
                         //mostrar datatable con animacion
@@ -949,6 +1437,8 @@ $(document).ready(function () {
             }
         }
     }
+
+
     $('table').hide();
 
     //Descomentar para probar en Raspberry
