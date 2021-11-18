@@ -1,6 +1,6 @@
  <?php
 
-	require $_SERVER["DOCUMENT_ROOT"].'/conexion.php';
+	require $_SERVER["DOCUMENT_ROOT"].'/kren/conexion.php';
 
 	$axn = $_POST['axn'];
 
@@ -33,7 +33,7 @@
 
 		case 'info_empleado':
 			$id_empleado = $_POST['id_empleado'];
-			$sql = "SELECT nombre_empleado, Edad, Telefono, Fecha_Nac, correo, domicilio, area, RFID_ID FROM empleados WHERE id_empleado = '$id_empleado';";
+			$sql = "SELECT nombre_empleado, Edad, Telefono, Fecha_Nac, correo, domicilio, area, RFID_ID FROM Empleados WHERE id_empleado = '$id_empleado';";
 			$result = $conn->query($sql);	
 			$i=1;
 
@@ -107,7 +107,7 @@
 
 		case 'borrar_empleado':
 			$id_empleado = $_POST['id_empleado'];
-			$sql = "DELETE FROM empleados WHERE id_empleado = ".$id_empleado.";";
+			$sql = "DELETE FROM Empleados WHERE id_empleado = ".$id_empleado.";";
 			$result = $conn->query($sql);
 	
 		    echo json_encode($result);
@@ -164,7 +164,7 @@
 			$domicilio = $_POST['domicilio'];
 			$rfid = $_POST['rfid'];
 
-			$sql="UPDATE empleados SET nombre_empleado = '$nombre_empleado', Telefono = '$telefono', Fecha_Nac = '$fecha_nac', correo = '$correo', domicilio = '$domicilio', area = '$area_departamento', RFID_ID = '$rfid' WHERE id_empleado = ".$id_empleado.";";
+			$sql="UPDATE Empleados SET nombre_empleado = '$nombre_empleado', Telefono = '$telefono', Fecha_Nac = '$fecha_nac', correo = '$correo', domicilio = '$domicilio', area = '$area_departamento', RFID_ID = '$rfid' WHERE id_empleado = ".$id_empleado.";";
 			$result = $conn->query($sql);	
 		    echo json_encode($result);
 		break;
@@ -312,11 +312,10 @@
 			$id_curso = $_POST['id_curso'];
 			$id_empleado = $_POST['id_empleado'];
 			
-			
 			$i=0;
 			$asistencias[]=0;
-
-			$sql = "SELECT entrada, salida FROM rfid WHERE id_empleado ='$id_empleado' AND id_curso = '$id_curso';";
+			
+			$sql = "SELECT entrada, salida FROM RFID WHERE id_empleado ='$id_empleado' AND id_curso = '$id_curso';";
 			
 			$result = $conn->query($sql);	
 			if ($result->num_rows > 0)

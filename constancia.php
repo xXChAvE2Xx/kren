@@ -4,11 +4,12 @@ require('lib/fpdf/fpdf.php');
 require('lib/PHPMailer/PHPMailerAutoload.php');
 require('conexion.php');
 
-define ("SENDEREMAIL", "krencom7@gmail.com");
+define ("SENDEREMAIL", "");
 define ("SENDERNAME", "Kren System");
 define ("SMTPHOST", "smtp.gmail.com");
 define ("SMTPUSER", "");
 define ("SMTPPASS", "");
+
 //Para realizar pruebas descomentar "down" y comentar "isset($_GET["online"]) ? $_GET["online"]: null;"
 $status = isset($_GET["online"]) ? $_GET["online"]: null;//"down";
 $msg = isset($_GET["text"]) ? $_GET["text"]: null;
@@ -129,7 +130,7 @@ if($id_curso != null && $status != null){
 	    $mail->Username = SMTPUSER;                 // Usuario SMTP
 	    $mail->Password = SMTPPASS;                           // Contraseña SMTP
 	    $mail->SMTPSecure = 'tls';                            // Activar encriptacion TLSted
-	    $mail->Port = 465;                                    // Puerto TCP
+	    $mail->Port = 587;                                    // Puerto TCP
 	    $mail->From = SENDEREMAIL;
 	    $mail->FromName = SENDERNAME;
 	    $mail->isHTML(false);
@@ -189,10 +190,9 @@ if($id_curso != null && $status != null){
 		            echo "Mailer Error: " . $mail->ErrorInfo;
 		            continue;
 		        }else{
-		        	//unlink('constancias/'.$nombre.'.pdf');
 		            echo "Message sent to: ".$email."\n";
-		            
 		        }
+		        //unlink('constancias/'.$nombre.$i.'.pdf');
 		    }else{
 		    	echo $nombre."<br>";
 		    	echo "Generada pero el email es invalido<br>";
@@ -273,7 +273,7 @@ if($id_curso != null && $status != null){
 		echo "<br> Estado: ".$status;
 		echo "<br> id_curso: ".$id_curso;
 	}	
-}else{
+}elseif ($nombre_emp != null && $nombre_curso != null){
 	//Se ejecuta solo si es en especifico
 	$constancia = "<b>CONSTANCIA</b>";
 	$html = 'Por su asistencia y participacion en el curso<b>"'.$nombre_curso.'"</b>';
@@ -305,6 +305,10 @@ if($id_curso != null && $status != null){
 	$pdf->MultiCell(0,10,'PUESTO_ENCARGADO',0,'C');
 	$pdf->Output('D', $nombre_emp.'.pdf', true);
 
+}else{
+	$msg = "ERROR";
+	$error = true;
+	$i = -1;
 }
 
 ?>
@@ -315,6 +319,7 @@ if($id_curso != null && $status != null){
 	<title><?php echo $msg ?></title>
 </head>
 <body>
-<h5><?php if ($i == 0){echo "Este curso aun no tiene asistencias";}else{ echo "Terminado";} ?></h5>
+<h5><?php if ($i==0){echo "Este curso aun no tiene asistencias";}elseif ($i > 0){ echo "Terminado";} 
+		if ($error == true) {echo "ERROR: Faltan datos.";} ?></h5>
 </body>
 </html>

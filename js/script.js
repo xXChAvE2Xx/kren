@@ -52,8 +52,6 @@ $(document).ready(function () {
                 $("input.siguiente_switch_movile").prop('checked', false);
 
             $('textarea[name="descripcion_movile"]').val($("#curso-detalle div#info").text());
-
-
             //mostramos el formulario en version para moviles
             setTimeout(function(){
             slideInRight_moviles("#formulario_cursos_para_moviles");
@@ -69,7 +67,23 @@ $(document).ready(function () {
             $('input[name="telefono_movile"]').val($("#curso-detalle #titulo-detalle").attr('telefono'));
             $('input[name="fecha_nacimiento_movile"]').val($("#curso-detalle #titulo-detalle").attr('fecha_nac'));
             $('input[name="domicilio_movile"]').val($("#curso-detalle #titulo-detalle").attr('domicilio'));
-            $('button[name="rfid"]').attr('rfid', $("#curso-detalle #titulo-detalle").attr('rfid'));
+            if (!$("#curso-detalle #titulo-detalle").attr('rfid')) {
+                $('button[name="rfid"]').attr('rfid', $("#curso-detalle #titulo-detalle").attr('rfid'));
+                $.notify("El usuario no cuenta con un tag RFID.", "warning");
+
+                $("#VincularRFID_movile").removeClass("btn-danger");
+                $("#VincularRFID_movile").removeClass("btn-success");
+                $("#VincularRFID_movile").addClass("btn_warning_own");
+            }else{
+                $('button[name="rfid"]').attr('rfid', $("#curso-detalle #titulo-detalle").attr('rfid'));
+
+                $("#msjActuRFIDmovil").show();
+                $("#msjRfidMovil").hide();
+                
+                $("#VincularRFID_movile").removeClass("btn-danger");
+                $("#VincularRFID_movile").removeClass("btn_warning_own");
+                $("#VincularRFID_movile").addClass("btn-success");
+            }
 
             //mostramos el formulario en version para moviles
             setTimeout(function(){
@@ -79,9 +93,22 @@ $(document).ready(function () {
     });
 
     $(".guardar_cambios_empleado").click(function(){
-       let rfid = $('input.button-vincular').attr('rfid');
+       let rfid = $("#VincularRFID").attr("rfid");//$('input.button-vincular').attr('rfid');
        if(rfid == undefined || rfid=='')
             rfid = 0;
+
+        var nombreEmpleado = $("input[name='nombre_empleado']").val();
+        var correo = $("input[name='correo']").val();
+        var FechaNacimiento = $("input[name='fecha_nacimiento']").val();
+        var departamento = $("input[name='area_departamento']").val();
+        var telefono = $("input[name='telefono']").val();
+        var domicilio = $("input[name='domicilio']").val();
+        //Comprobamos que los campos no esten vacíos
+        if (nombreEmpleado.trim().length > 0 &&
+            correo.trim().length > 0 &&
+            FechaNacimiento.length > 0 &&
+            departamento.trim().length > 0 &&
+            domicilio.trim().length > 0) {
 
             id_actual_empleado_en_detalle = id_empleado_en_detalle;
             $.ajax({
@@ -90,12 +117,12 @@ $(document).ready(function () {
                 data: {
                     axn: "actualizar_empleado",
                     id_empleado: id_empleado_en_detalle,
-                    nombre_empleado:  $("input[name='nombre_empleado']").val(),
-                    correo: $("input[name='correo']").val(),
-                    fecha_nac: $("input[name='fecha_nacimiento']").val(),
-                    area_departamento: $("input[name='area_departamento']").val(),
-                    telefono: $("input[name='telefono']").val(),
-                    domicilio: $("input[name='domicilio']").val(),
+                    nombre_empleado:  nombreEmpleado,
+                    correo: correo,
+                    fecha_nac: FechaNacimiento,
+                    area_departamento: departamento,
+                    telefono: telefono,
+                    domicilio: domicilio,
                     rfid: rfid
                 }
             }).done(function (data) {
@@ -111,45 +138,54 @@ $(document).ready(function () {
                     //actualizamos listado
                     $('.list-group li').remove();
                     estado_lista ='';
-                    listado_empleados();
-                       
+                    listado_empleados();    
                 }
-    
-              
             });
-
+        }else{
+            $(".modal-exito .title").html("<i class='fas fa-times'></i> Algunos campos están vacíos, compruebe y vuelva a intentar.");
+            $(".modal-exito").show();
+        }
     });
 
 
     $(".guardar_cambios_movile").on('click',function(){
-        //peticion para actualizar datos
-        $.ajax({
-            method: "POST",
-            url: "controladores.php",
-            data: {
-                axn: "actualizar_curso",
-                id_curso: id_curso_en_detalle,
-                nombre_curso: $('input[name="nombre_curso_movile"]').val(),
-                ponente: $('input[name="ponente_movile"]').val(),
-                descripcion: $('textarea[name="descripcion_movile"]').val(),
-                siguiente: $("input.siguiente_switch_movile").prop('checked')
-            }
-        }).done(function (data) {
-            if(JSON.parse(data)==true){
-                $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Curso actualizado con exito");
-                $(".modal-exito").show();
-                $("#form-agregar-curso_movile input").val('');
-                $("#form-agregar-curso_movile textarea").val('');
-                $("#form-agregar-curso_movile input.siguiente_switch_movile").prop('checked', false);
-                $(".cerrar-formulario-movile").click();
-            }
-        });
-        
+
+        var  nombreC = $('input[name="nombre_curso_movile"]').val();
+        var ponente = $('input[name="ponente_movile"]').val();
+        var descripcion = $('textarea[name="descripcion_movile"]').val();
+        var siguiente = $("input.siguiente_switch_movile").prop('checked');
+        if (nombreC.trim().length > 0 &&
+            ponente.trim().length > 0 &&
+            descripcion.trim().length > 0) {
+            //peticion para actualizar datos
+            $.ajax({
+                method: "POST",
+                url: "controladores.php",
+                data: {
+                    axn: "actualizar_curso",
+                    id_curso: id_curso_en_detalle,
+                    nombre_curso: nombreC,
+                    ponente: ponente,
+                    descripcion: descripcion,
+                    siguiente: siguiente 
+                }
+            }).done(function (data) {
+                if(JSON.parse(data)==true){
+                    $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Curso actualizado con exito");
+                    $(".modal-exito").show();
+                    $("#form-agregar-curso_movile input").val('');
+                    $("#form-agregar-curso_movile textarea").val('');
+                    $("#form-agregar-curso_movile input.siguiente_switch_movile").prop('checked', false);
+                    $(".cerrar-formulario-movile").click();
+                }
+            });
+        }else{
+            $(".modal-exito .title").html("<i class='fas fa-times'></i> Algunos campos están vacíos, compruebe y vuelva a intentar.");
+            $(".modal-exito").show();
+        }
     });
 
-    
 
-    
     $("#plus-agregar-empleado-movile").on('click',function(){
         //ocultamos el contenido
         slideOutRight_moviles("div#contenido");
@@ -188,40 +224,55 @@ $(document).ready(function () {
     });
 
     $("button.guardar_cambios_empleado_movile").on('click',function(){
-        id_actual_empleado_en_detalle = id_empleado_en_detalle;
-        $.ajax({
-            method: "POST",
-            url: "controladores.php",
-            data: {
-                axn: "actualizar_empleado",
-                id_empleado: id_empleado_en_detalle,
-                nombre_empleado: $('input[name="nombre_empleado_movile"]').val(),
-                correo: $('input[name="correo_movile"]').val(),
-                fecha_nac: $('input[name="fecha_nacimiento_movile"]').val(),
-                area_departamento: $('input[name="area_departamento_movile"]').val(),
-                telefono: $('input[name="telefono_movile"]').val(),
-                domicilio: $('input[name="domicilio_movile"]').val(),
-                rfid: $('#form-agregar-empleado-movile button[name="rfid"]').attr('rfid')
-            }
-        }).done(function (data) {
-            if(JSON.parse(data)==true){
-                $("#form-agregar-empleado-movile input").val('');
-                $("button[name=rfid]").removeAttr('rfid');
+        var nombreEmpleadoMovil = $('input[name="nombre_empleado_movile"]').val();
+        var correoMovil = $('input[name="correo_movile"]').val();
+        var FechaNacMovil = $('input[name="fecha_nacimiento_movile"]').val();
+        var departamentoMv = $('input[name="area_departamento_movile"]').val();
+        var telefonoMv = $('input[name="telefono_movile"]').val();
+        var domicilioMv = $('input[name="domicilio_movile"]').val();
+        var rfidMovil = $('#form-agregar-empleado-movile button[name="rfid"]').attr('rfid');
 
-                $(".cerrar-formulario-movile").click();
+        if (nombreEmpleadoMovil.trim().length > 0 &&
+            correoMovil.trim().length > 0 &&
+            FechaNacMovil.length > 0 &&
+            departamentoMv.trim().length > 0 &&
+            domicilioMv.trim().length > 0) {
 
-                $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Empleado actualizado con exito");
-                $(".modal-exito").show();
+            id_actual_empleado_en_detalle = id_empleado_en_detalle;
+            $.ajax({
+                method: "POST",
+                url: "controladores.php",
+                data: {
+                    axn: "actualizar_empleado",
+                    id_empleado: id_empleado_en_detalle,
+                    nombre_empleado: nombreEmpleadoMovil,
+                    correo: correoMovil,
+                    fecha_nac: FechaNacMovil,
+                    area_departamento: departamentoMv,
+                    telefono: telefonoMv,
+                    domicilio: domicilioMv,
+                    rfid: rfidMovil
+                }
+            }).done(function (data) {
+                if(JSON.parse(data)==true){
+                    $("#form-agregar-empleado-movile input").val('');
+                    $("button[name=rfid]").removeAttr('rfid');
 
-                //actualizamos listado
-                $('.list-group li').remove();
-                estado_lista ='';
-                listado_empleados();
-                   
-            }
+                    $(".cerrar-formulario-movile").click();
 
-          
-        });
+                    $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Empleado actualizado con exito");
+                    $(".modal-exito").show();
+
+                    //actualizamos listado
+                    $('.list-group li').remove();
+                    estado_lista ='';
+                    listado_empleados();   
+                }
+            });
+        }else{
+            $(".modal-exito .title").html("<i class='fas fa-times'></i> Algunos campos están vacíos, compruebe y vuelva a intentar.");
+            $(".modal-exito").show();
+        }
     });
 
     //boton del listado de asistencias en version movile
@@ -451,7 +502,12 @@ $(document).ready(function () {
                     id_empleado: id_empleado
                 }
             }).done(function (data) {
-
+                var tel = "";
+                
+                if(JSON.parse(data)[2] == '' || JSON.parse(data)[2] == null)
+                    var tel = '<font color="#3dd6af">Sin número telefónico</font>';
+                else
+                    tel = JSON.parse(data)[2]
                 id_empleado_en_detalle = id_empleado;
                 //gaurdado de valores en atributos
                 $("#titulo-detalle").attr('correo',JSON.parse(data)[4]);
@@ -463,7 +519,7 @@ $(document).ready(function () {
                 //rellenar valores en detalle
                 $("#info").empty();
                 $("#info").append('<font color="#ffc107">Edad: </font>'+JSON.parse(data)[1]+'');
-                $("#info").append('<br><font color="#ffc107">Telefono: </font>'+JSON.parse(data)[2]);
+                $("#info").append('<br><font color="#ffc107">Telefono: </font>'+tel);
                 $("#info").append('<br><font color="#ffc107">Fecha de nacimiento: </font>'+JSON.parse(data)[3]);
                 $("#info").append('<br><font color="#ffc107">Correo: </font>'+JSON.parse(data)[4]);
                 $("#info").append('<br><font color="#ffc107">Domicilio: </font>'+JSON.parse(data)[5]);
@@ -699,6 +755,7 @@ $(document).ready(function () {
 
         })
     }
+
 
 
 
@@ -939,7 +996,22 @@ $(document).ready(function () {
         $("input[name='fecha_nacimiento']").val($('#titulo-detalle').attr('fecha_nac'));
         $("input[name='telefono']").val($('#titulo-detalle').attr('telefono'));
         $("input[name='domicilio']").val($('#titulo-detalle').attr('domicilio'));
+     if (!$("#curso-detalle #titulo-detalle").attr('rfid')) {
+            $('button[name="rfid"]').attr('rfid', $("#curso-detalle #titulo-detalle").attr('rfid'));
+            $("#VincularRFID").removeClass("btn-danger");
+            $("#VincularRFID").removeClass("btn-success");
+            $.notify("El usuario no cuenta con un tag RFID.", "warning");
+            $("#msjActuRFID").hide();
+        }else{
+            $('button[name="rfid"]').attr('rfid', $("#curso-detalle #titulo-detalle").attr('rfid'));
 
+            $("#msjActuRFID").show();
+            $("#msjRfid").hide();
+            
+            $("#VincularRFID").removeClass("btn-danger");
+            $("#VincularRFID").removeClass("btn-warning");
+            $("#VincularRFID").addClass("btn-success");
+        }
         $("button.agregar_empleado").hide();
         $("button.guardar_cambios_empleado").show();
 
@@ -958,38 +1030,49 @@ $(document).ready(function () {
 
 
     $('.guardar_cambios').click(function () {
-        $.ajax({
-            method: "POST",
-            url: "controladores.php",
-            data: {
-                axn: "actualizar_curso",
-                id_curso: id_curso_en_detalle,
-                nombre_curso: $("input[name='nombre_curso']").val(),
-                ponente: $("input[name='ponente']").val(),
-                siguiente: $(".siguiente_switch").prop('checked'),
-                descripcion: $('.des_form').val(),
-            }
-        }).done(function (data) {
-            if (JSON.parse(data) == true) {
-                //actualizamos listado
-                $("li[id_curso=" + id_curso_en_detalle + "] div.nombre_curso").text($("input[name='nombre_curso']").val());
-                $("li[id_curso=" + id_curso_en_detalle + "] span.ponente").text($("input[name='ponente']").val());
-                //actualiza curso detalle
-                var id_curso_guardado = id_curso_en_detalle;
-                id_curso_en_detalle = '';
-                $("li[id_curso=" + id_curso_guardado + "] span.ver-curso").click();
-                //modal de exito
-                $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Curso actualizado con exito");
-                $(".modal-exito").show();
-                //vaciamos formulario
-                $("#form-agregar-curso input").val('');
-                $("#form-agregar-curso textarea").val('');
-                //oculta formulario
-                $("#form-agregar-curso").hide();
-                $("#agregar-curso").css('background-color', '#1d2f39b5');
-                $(".selector_opc").show();
-            }
-        })
+
+        var nombreCurso = $("input[name='nombre_curso']").val();
+        var ponente = $("input[name='ponente']").val();
+        var siguiente = $(".siguiente_switch").prop('checked');
+        var descripcion = $('.des_form').val(); 
+
+        if (nombreCurso.trim().length > 0 && ponente.trim().length > 0 && descripcion.trim().length > 0) {
+            $.ajax({
+                method: "POST",
+                url: "controladores.php",
+                data: {
+                    axn: "actualizar_curso",
+                    id_curso: id_curso_en_detalle,
+                    nombre_curso: $("input[name='nombre_curso']").val(),
+                    ponente: $("input[name='ponente']").val(),
+                    siguiente: $(".siguiente_switch").prop('checked'),
+                    descripcion: $('.des_form').val(),
+                }
+            }).done(function (data) {
+                if (JSON.parse(data) == true) {
+                    //actualizamos listado
+                    $("li[id_curso=" + id_curso_en_detalle + "] div.nombre_curso").text($("input[name='nombre_curso']").val());
+                    $("li[id_curso=" + id_curso_en_detalle + "] span.ponente").text($("input[name='ponente']").val());
+                    //actualiza curso detalle
+                    var id_curso_guardado = id_curso_en_detalle;
+                    id_curso_en_detalle = '';
+                    $("li[id_curso=" + id_curso_guardado + "] span.ver-curso").click();
+                    //modal de exito
+                    $(".modal-exito .title").html("<i class='fas fa-check-circle'></i> Curso actualizado con exito");
+                    $(".modal-exito").show();
+                    //vaciamos formulario
+                    $("#form-agregar-curso input").val('');
+                    $("#form-agregar-curso textarea").val('');
+                    //oculta formulario
+                    $("#form-agregar-curso").hide();
+                    $("#agregar-curso").css('background-color', '#1d2f39b5');
+                    $(".selector_opc").show();
+                }
+            })
+        }else{
+            $(".modal-exito .title").html("<i class='fas fa-times'></i> Algunos campos están vacíos, compruebe y vuelva a intentar.");
+            $(".modal-exito").show();
+        } 
     });
     $(".btn_lista_empleados").click(function () {
         if($("#example_wrapper").css('display')!='none')$("button.boton-volver-asistencias").click();//oculta las asistencias si estan mostrandose y si le dan click al boton de empleados
@@ -1018,6 +1101,7 @@ $(document).ready(function () {
 
             if (validar.boton == 0 && validar.web == 0) {
                 $("#msjRfid").hide();
+                $("#msjActuRFID").hide();
                 $("#esperaTag").show();
                 $.ajax({
                     method: "POST",
@@ -1053,9 +1137,60 @@ $(document).ready(function () {
                 $.notify("Lector RFID en uso", "warn");
             }
         })
-
     });
    
+    //Version Mobile
+    $("#VincularRFID_movile").click(function(){       
+        $.ajax({
+            method: "POST",
+            data: { axn: "traer_estado" },
+            url: "controladores.php",
+            dataType: 'json'
+        }).done(function (validar) {
+
+            if (validar.boton == 0 && validar.web == 0) {
+                
+                $("#msjRfidMovil").hide();
+                $("#msjActuRFIDmovil").hide();
+                $("#esperaTagMovil").show();
+
+                $.ajax({
+                    method: "POST",
+                    url: "controladores.php",
+                    data: {
+                        axn: "traer_id_rfid",
+                    },
+                    dataType: 'json'
+                }).done(function (data) {
+                    var id = data.id.trim();
+                    if(data.estado == true){
+                        $("#VincularRFID_movile").attr("RFID", id)
+                        $("#VincularRFID_movile").removeClass("btn-danger");
+                        $("#VincularRFID_movile").removeClass("btn-warning");
+                        $("#VincularRFID_movile").addClass("btn-success");
+                        $.notify("Se agrego el ID: " + id, "success");
+                        $("#esperaTagMovil").hide();
+                        $("#msjRfidMovil").show();
+                        $(".agregar_empleado").prop('disabled', false);
+                    }else{
+                        $("#VincularRFID_movile").removeClass("btn-danger");
+                        $("#VincularRFID_movile").addClass("btn-danger");
+                        $.notify("Tag RFID en uso por otro usuario", "warn");
+                        $("#esperaTagMovil").hide();
+                        $("#msjRfidMovil").show();
+                        $(".agregar_empleado").prop('disabled', true);
+                        
+                    }
+                })
+            } else {
+                $("#VincularRFID_movile").removeClass("btn-warning");
+                $("#VincularRFID_movile").addClass("btn-danger");
+                $.notify("Lector RFID en uso", "warn");
+            }
+        })
+    });
+
+
     var tiempoReal = "";
     $(".mostrarTiempoReal").on("click", function () {
         $("#label-actividad-act").show();
@@ -1350,7 +1485,6 @@ $(document).ready(function () {
                 }
                 i = i + 5;
 
-                
                 if (i == JSON.parse(data).length) {//si ya se termino de rellenar el datatable
                     $('table').show();
                     
@@ -1366,6 +1500,16 @@ $(document).ready(function () {
                             window.open("constancia.php?nombre="+nombre+"&entrada="+entrada+"&nom_curso="+nom_curso+"&salida="+salida+"&area="+area, 'Constancia de '+nombre, 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=200,left = 390,top = 50');
 
                            
+                        });
+
+                        $("#ConstanciaDownload").click(function(){
+                            console.log("Se dio click")
+                            var nombre = $(this).parent().prev().prev().prev().prev().text();
+                            var nom_curso = $('div.nombre_curso[id_curso='+id_curso_en_datatable+']').text();
+                            var entrada = $(this).parent().prev().prev().text();
+                            var salida = $(this).parent().prev().text();
+                            var area  = $(this).parent().prev().prev().prev().text();
+                            window.open("constancia.php?nombre="+nombre+"&entrada="+entrada+"&nom_curso="+nom_curso+"&salida="+salida+"&area="+area, 'Constancia de '+nombre, 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=200,left = 390,top = 50');
                         });
                         //genera el datatable
                         generar_datatable();
@@ -1389,7 +1533,6 @@ $(document).ready(function () {
             }
         });
     }
-
 
     //optimizada
     //click para boton asistencias
@@ -1442,12 +1585,16 @@ $(document).ready(function () {
     $('table').hide();
 
     //Descomentar para probar en Raspberry
+    //ws-bdimperio8.payformance.com
+    //ws-bdimperio8.payspan.com 
     //NO BORRAR
-    Offline.options = {checks: {xhr: {url: 'https://kren2021com.000webhostapp.com/'}}};
+    //Offline.options = {checks: {xhr: {url: 'https://www.bar.other/resources/public-data/'}}};
     //NO BORRAR
 
     var run = function(){
       Offline.check();
     }
     setInterval(run, 2000); //Para saber si seguimos en linea tenemos que checar cada 3 segundos
+
+
 }); //fin document-ready
