@@ -23,7 +23,6 @@ con = mysql.connector.connect(user='root', password='T3si2', host='localhost', d
 
 def main():
 	try:
-
 		GPIO.setmode(GPIO.BOARD) # Usamos el numero Fisico
 		GPIO.setup(led_espera, GPIO.OUT)#Configuracion de los LEDs
 		GPIO.setup(led_rfid, GPIO.OUT)#Configuracion de los LEDs
@@ -44,7 +43,6 @@ def main():
 			GPIO.output(led_espera, GPIO.LOW)
 		else:
 			leer_tags()
-		#message = input("Esperando...\n\n") # En espera.
 	except KeyboardInterrupt:
 		print("Se cerro con ctr+c")
 	finally:
@@ -62,21 +60,32 @@ def leer_tags():
 
 	if cursorC.rowcount >= 1:
 		idCurso = resu_id[0]
+	else:
+		idCurso = 0
+
 	print("IdCurso:",idCurso)
 
 	
 	cursor = con.cursor()#Selecciona los empleados
 	cursorF = con.cursor()#Selecciona la llave maestra
 	cursorH = con.cursor()#Sirve para agregar la hora de inicio y la hora de fin
+	cursorValid = con.cursor()#Sirve para validad curso
+
+	cursorValid.execute("SELECT fecha_hora_inicio, fecha_hora_fin FROM Cursos WHERE id_curso="+str(idCurso))
+	resuCurso = cursorValid.fetchone()
 
 	agregarHoraInicio = ("UPDATE Cursos SET fecha_hora_inicio = %s WHERE id_curso = %s")
 	agregarHoraFin = ("UPDATE Cursos SET fecha_hora_fin = %s WHERE id_curso = %s")
+
 	datosHoraInicio = (str(datetime.now()), idCurso)
 
-	cursorH.execute(agregarHoraInicio, datosHoraInicio)
+	if resuCurso[0] == None:
+		cursorH.execute(agregarHoraInicio, datosHoraInicio)
 
 	agregarStatus = ("UPDATE status SET boton = %s WHERE id = %s")
 	datosStatus = (1, 1)
+
+	agregar_entrada = ("INSERT INTO RFID (id_curso, id_empleado, entrada, salida) VALUES (%s, %s, %s, %s)")	
 
 	cursor.execute(agregarStatus, datosStatus)
 	con.commit()
@@ -89,6 +98,9 @@ def leer_tags():
 		GPIO.output(led_espera, GPIO.LOW)
 		GPIO.output(led_rfid, GPIO.HIGH)
 		while True:
+			if idCurso == 0:
+				break
+
 			print("Pase la tarjeta por el Lector --> ")
 			id, text = rfid.read()
 			
@@ -98,12 +110,11 @@ def leer_tags():
 
 			cursorF.execute("SELECT id_tag FROM verify WHERE id_tag="+str(id))
 			salir = cursorF.fetchone()
-
-			agregar_entrada = ("INSERT INTO RFID (id_curso, id_empleado, entrada, salida) VALUES (%s, %s, %s, %s)")
-
+			
 			if cursorF.rowcount >= 1:
 				GPIO.output(led_espera, GPIO.HIGH)
 				GPIO.output(pin_led_error, GPIO.HIGH)
+				GPIO.output(led_rfid, GPIO.LOW)
 				salida = GPIO.wait_for_edge(boton_fin, GPIO.RISING) #para debug= timeout=5000 Esperamos a que se presione el boton inicio
 
 				if salida is None:
@@ -113,22 +124,24 @@ def leer_tags():
 					break
 
 			if cursor.rowcount >= 1: #si se existe el usuario, entonces lo agregamos a la tabla de asistencias
-				print("Bienvenido "+resultado[2])
-				print("RFID: ", id)
+	
 				id_empleado = resultado[0];
 
-				datos_entrada =(idCurso, id_empleado, str(datetime.now()), 0)
-
+				datos_entrada=(idCurso, id_empleado, str(datetime.now()), 0)
 				cursor.execute(agregar_entrada, datos_entrada)
 				con.commit()
-
+					
+					
+				print("Bienvenido "+resultado[2])
+				print("RFID: ", id)
+				
 				GPIO.output(pin_led_success, GPIO.HIGH )
 			else: #Si no existe no se hace nad, o podriamos mostrar un led Rojo
 				print("Error: Usuario no existe en la base de datos!")
 				print("RFID: ", id)
 				GPIO.output(pin_led_error, GPIO.HIGH )
 
-			time.sleep(0.5) #dejamos medio segundo de espera
+			time.sleep(1) #dejamos un segundo de espera
 			GPIO.output(pin_led_success, GPIO.LOW)
 			GPIO.output(pin_led_error, GPIO.LOW)
 	finally:
@@ -141,11 +154,12 @@ def leer_tags():
 		datosHoraFin = (str(datetime.now()), idCurso)
 		cursorH.execute(agregarHoraFin, datosHoraFin)
 		con.commit()
+
 		cursor.close()
 		cursorF.close()
 		cursorH.close()
 		cursorC.close()
-		#con.close()
+		cursorValid.close()
 		print("Finalizo")
 		main()
 
@@ -156,6 +170,8 @@ def leer_tags():
 def iniciar_Registro_fin():
 	GPIO.output(led_espera, GPIO.LOW)
 	GPIO.output(pin_led_error, GPIO.LOW)
+	GPIO.output(led_rfid, GPIO.HIGH)
+	
 	while True:
 		print("Pase la tarjeta por el Lector (Salida)--> ")
 		rfid = SimpleMFRC522()
@@ -165,7 +181,7 @@ def iniciar_Registro_fin():
 		cursorF = con.cursor()#Selecciona la llave maestra
 
 		agregarSalida = ("UPDATE RFID SET salida = %s WHERE id_empleado = %s")
-
+		
 		#query que obtendra el usuario
 		cursor.execute("SELECT id_empleado FROM Empleados WHERE RFID_ID="+str(id))
 		resultado = cursor.fetchone()
@@ -192,7 +208,7 @@ def iniciar_Registro_fin():
 			print("RFID: ", id)
 			GPIO.output(pin_led_error, GPIO.HIGH )
 
-		time.sleep(0.5) #dejamos medio segundo de espera
+		time.sleep(1) #dejamos un segundo de espera
 		GPIO.output(pin_led_success, GPIO.LOW)
 		GPIO.output(pin_led_error, GPIO.LOW)
 

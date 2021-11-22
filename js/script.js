@@ -8,6 +8,10 @@ $(document).ready(function () {
     let id_curso_en_datatable = 0;
     let id_empleado_en_detalle = 0;
     let id_actual_empleado_en_detalle = 0;
+    // Sirve para obtener la fecha en español, esto es para la constancia.
+    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    const dias_semana = ['Domingo', 'Lunes', 'martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const fecha = new Date(); //Objeto fecha, con instancia a Date
 
     $("#label-actividad-act").hide();
     $(".ocultarTiempoReal").hide();
@@ -219,7 +223,6 @@ $(document).ready(function () {
         else {
             $(".modal-exito .title").html("<i class='fas fa-times'></i> Datos incompletos");
             $(".modal-exito").show();
-            console.log('/');
         }
     });
 
@@ -421,7 +424,7 @@ $(document).ready(function () {
                 var idcurso = $(this).attr('id_curso');
                 var nombre_curso = $("li[id_curso=" + idcurso + "] div.nombre_curso").text();
                 var link = ""
-                var online = Offline.state
+                var online = 'down';//Offline.state
                 if (online == 'up') {
                     nombre_ventana = "Se enviaron las constancias";
                 }else{
@@ -561,7 +564,6 @@ $(document).ready(function () {
             //mostramos el primer empleado en detalle
             mostrar_empleado_detalle(JSON.parse(data)[1]);
             if(id_actual_empleado_en_detalle!=0) {   
-                console.log('id_actual'+id_actual_empleado_en_detalle);
                 //dejamos el mismo usuario que estaba antes de la actualización (osea el mismo que se actuualizo)
                 mostrar_empleado_detalle(id_actual_empleado_en_detalle);
                 id_actual_empleado_en_detalle = 0;//IMPORTANTE: resetear esta variable a 0
@@ -586,15 +588,23 @@ $(document).ready(function () {
     function crear_curso(opc) {
         if(opc == false)//si es la version para escritorio
         {
+            let nombreCurso = $("input[name='nombre_curso']").val();
+            nombreCurso = nombreCurso.trim();
+            let ponente = $("input[name='ponente']").val();
+            ponente = ponente.trim();
+            let siguiente = $('.siguiente_switch').prop('checked');
+            let descripcion = $("textarea[name='descripcion']").val();
+            descripcion = descripcion.trim();
+
             $.ajax({
                 method: "POST",
                 url: "controladores.php",
                 data: {
                     axn: "crear_curso",
-                    nombre: $("input[name='nombre_curso']").val(),
-                    ponente: $("input[name='ponente']").val(),
-                siguiente: $('.siguiente_switch').prop('checked'),
-                    descripcion: $("textarea[name='descripcion']").val()
+                    nombre: nombreCurso,
+                    ponente: ponente,
+                siguiente: siguiente,
+                    descripcion: descripcion
                 }
             }).done(function (data) {
                 if (JSON.parse(data) == true) {
@@ -641,18 +651,30 @@ $(document).ready(function () {
     function agregar_empleado(opc) {
         if(opc == false)//si es la version para escritorio
         {
+            let nombreEmpl = $("input[name='nombre_empleado']").val();
+            nombreEmpl = nombreEmpl.trim();
+            let correo = $("input[name='correo']").val();
+            correo = correo.trim();
+            let fechaNac = $("input[name='fecha_nacimiento']").val();
+            let areaDep = $("input[name='area_departamento']").val();
+            areaDep = areaDep.trim();
+            let telefono = $("input[name='telefono']").val();
+            let domicilio = $("input[name='domicilio']").val();
+            domicilio = domicilio.trim();
+            let idRfid = $("#VincularRFID").attr("RFID");
+
             $.ajax({
                 method: "POST",
                 url: "controladores.php",
                 data: {
                     axn: "agregar_empleado",
-                    nombre: $("input[name='nombre_empleado']").val(),
-                    correo: $("input[name='correo']").val(),
-                    fecha_nacimiento: $("input[name='fecha_nacimiento']").val(),
-                    area_departamento: $("input[name='area_departamento']").val(),
-                    telefono: $("input[name='telefono']").val(),
-                    domicilio: $("input[name='domicilio']").val(),
-                    id_RFID: $("#VincularRFID").attr("RFID")
+                    nombre: nombreEmpl,
+                    correo: correo,
+                    fecha_nacimiento: fechaNac,
+                    area_departamento: areaDep,
+                    telefono: telefono,
+                    domicilio: domicilio,
+                    id_RFID:idRfid 
                 }
             }).done(function (data) {
                 var datas = data.trim();
@@ -678,18 +700,30 @@ $(document).ready(function () {
                 $(".modal-exito").show();
                 return false;
             }else{
+                let nombreEmplMv = $("input[name='nombre_empleado_movile']").val();
+                nombreEmplMv = nombreEmplMv.trim(); //Quita los espacios al inicio
+                let correoMv = $("input[name='correo_movile']").val();
+                correoMv = correoMv.trim();//Quita los espacios al inicio
+                let fechaNacMv = $("input[name='fecha_nacimiento_movile']").val();
+                let areaDepMv = $("input[name='area_departamento_movile']").val();
+                areaDepMv = areaDepMv.trim();//Quita los espacios al inicio
+                let telefonoMv = $("input[name='telefono_movile']").val();
+                let domicilioMv = $("input[name='domicilio_movile']").val();
+                domicilioMv = domicilioMv.trim();//Quita los espacios al inicio
+                let idRfidMv = $("#VincularRFID_movile").attr("RFID");
+
                 $.ajax({
                     method: "POST",
                     url: "controladores.php",
                     data: {
                         axn: "agregar_empleado",
-                        nombre: $("input[name='nombre_empleado_movile']").val(),
-                        correo: $("input[name='correo_movile']").val(),
-                        fecha_nacimiento: $("input[name='fecha_nacimiento_movile']").val(),
-                        area_departamento: $("input[name='area_departamento_movile']").val(),
-                        telefono: $("input[name='telefono_movile']").val(),
-                        domicilio: $("input[name='domicilio_movile']").val(),
-                        id_RFID: $("#VincularRFID_movile").attr("RFID")
+                        nombre: nombreEmplMv,
+                        correo: correoMv,
+                        fecha_nacimiento: fechaNacMv,
+                        area_departamento: areaDepMv,
+                        telefono: telefonoMv,
+                        domicilio: domicilioMv,
+                        id_RFID: idRfidMv
                     }
                 }).done(function (data) {
                     var datas = data.trim();
@@ -750,14 +784,10 @@ $(document).ready(function () {
                     $("#label-actividad-act").html('');
                 }, 5000)
             } else {
-                $("#label-actividad-act").html(data);
+                $("#label-actividad-act").html(data)
             }
-
         })
     }
-
-
-
 
     $("#form-agregar-curso").hide();
     $("#plus-agregar").click(function () {
@@ -1196,13 +1226,12 @@ $(document).ready(function () {
         $("#label-actividad-act").show();
         $(".ocultarTiempoReal").show();
         $(".mostrarTiempoReal").hide();
-        //Inciamos la actualizacion, cada segundo
+        //Inciamos la actualizacion, cada medio segundo
         tiempoReal = setInterval(function () { tiempo_real(); }, 500);
-
     });
 
     $(".ocultarTiempoReal").on("click", function () {
-        $("#label-actividad-act").hide();
+        $("#label-actividad-act").hide()
         $(".ocultarTiempoReal").hide();
         $(".mostrarTiempoReal").show();
         //Inciamos la actualizacion, cada segundo
@@ -1216,7 +1245,6 @@ $(document).ready(function () {
         }).done(function (data) {
 
         })
-
     });
 
 
@@ -1356,8 +1384,9 @@ $(document).ready(function () {
                     $(".modal-asistencia span#info").html("<br>Empleado:&nbsp;"+empleado+"<br>Area:&nbsp;"+area);
                     $(".modal-asistencia span#info").append("<br>Curso:&nbsp;"+curso);
                     $(".modal-asistencia tbody").empty();
+                    $("#ConstanciaDownload").attr("nombre", empleado);
+                    
                     let tamaño = JSON.parse(data).length/2;
-                    console.log(tamaño);
                     for(let i=0;i<tamaño;i++){
                         $(".modal-asistencia tbody").append("<tr><th>"+JSON.parse(data)[i]+"</th><th>"+JSON.parse(data)[i+1]+"</th></tr>");
                     }
@@ -1474,22 +1503,29 @@ $(document).ready(function () {
             while (i < JSON.parse(data).length){//recorre todos los valores del JSON
                 if(JSON.parse(data)!='ERROR')
                 {
-                    if(listado_version_movile == true){//verificamos la version (moviles/desktop) para intercambiar llenado del datatable
+                    //if(listado_version_movile == true){//verificamos la version (moviles/desktop) para intercambiar llenado del datatable
                         if(id_empleado != JSON.parse(data)[i])
                         {
                             $("table#example tbody").append('<tr><td>' + JSON.parse(data)[i + 1] + '</td><td><button area="'+JSON.parse(data)[i + 2]+'" empleado="'+JSON.parse(data)[i + 1]+'" id_empleado="'+JSON.parse(data)[i]+'" class="button is-rounded is-primary btn_info_asistencia"><i class="fas fa-chevron-right"></i></button></td></tr>');
                             id_empleado = JSON.parse(data)[i];
                         }
-                    }else
-                        $("table#example tbody").append('<tr><td>' + JSON.parse(data)[i + 1] + '</td><td>' + JSON.parse(data)[i + 2] + '</td><td><span class="tag is-success" title="Fecha y hora de entrada de esta asistencia">'+JSON.parse(data)[i + 3]+'</span></td><td><span class="tag is-danger" title="Fecha y hora de salida de esta asistencia">'+JSON.parse(data)[i + 4]+'</span></td><td><button  class="button is-rounded is-primary btn_download_constancia"><i class="fas fa-download"></i></button></td></tr>');
+
+                    //}else
+                   //     $("table#example tbody").attr('<tr><td>' + JSON.parse(data)[i + 1] + '</td><td>' + JSON.parse(data)[i + 2] + '</td><td><span class="tag is-success" title="Fecha y hora de entrada de esta asistencia">'+JSON.parse(data)[i + 3]+'</span></td><td><span class="tag is-danger" title="Fecha y hora de salida de esta asistencia">'+JSON.parse(data)[i + 4]+'</span></td><td><button  class="button is-rounded is-primary btn_download_constancia"><i class="fas fa-download"></i></button></td></tr>');
                 }
                 i = i + 5;
 
+                let hoyEsp = dias_semana[fecha.getDay()] + ', ' + fecha.getDate() + ' de ' + meses[fecha.getMonth()] + ' de ' + fecha.getUTCFullYear();
+
+                $("table#example tbody").attr("fecha",hoyEsp);
+
                 if (i == JSON.parse(data).length) {//si ya se termino de rellenar el datatable
                     $('table').show();
-                    
+
                     if ($('#example_wrapper').length == 0) {//si no existe un datatable actualmente
                         
+
+
                         $(".btn_download_constancia").on('click',function(){//descargar asistencias
 
                             var nombre = $(this).parent().prev().prev().prev().prev().text();
@@ -1502,15 +1538,6 @@ $(document).ready(function () {
                            
                         });
 
-                        $("#ConstanciaDownload").click(function(){
-                            console.log("Se dio click")
-                            var nombre = $(this).parent().prev().prev().prev().prev().text();
-                            var nom_curso = $('div.nombre_curso[id_curso='+id_curso_en_datatable+']').text();
-                            var entrada = $(this).parent().prev().prev().text();
-                            var salida = $(this).parent().prev().text();
-                            var area  = $(this).parent().prev().prev().prev().text();
-                            window.open("constancia.php?nombre="+nombre+"&entrada="+entrada+"&nom_curso="+nom_curso+"&salida="+salida+"&area="+area, 'Constancia de '+nombre, 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=200,left = 390,top = 50');
-                        });
                         //genera el datatable
                         generar_datatable();
                         //declara la funcion que cambia los estilos del li cuando es clickeado
@@ -1533,6 +1560,16 @@ $(document).ready(function () {
             }
         });
     }
+
+    $("#ConstanciaDownload").click(function(){
+        let nom_curso = $('div.nombre_curso[id_curso='+id_curso_en_datatable+']').text();
+        let nombreEmpl = $(this).attr("nombre");
+        nombreEmpl = nombreEmpl.trim();
+        let fecha = $("table#example tbody").attr("fecha");
+
+        window.open("constancia.php?nombre="+nombreEmpl+"&fecha="+fecha+"&nom_curso="+nom_curso, 'Constancia de '+nombreEmpl, 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=200,left = 390,top = 50');
+    });
+
 
     //optimizada
     //click para boton asistencias
@@ -1584,17 +1621,10 @@ $(document).ready(function () {
 
     $('table').hide();
 
-    //Descomentar para probar en Raspberry
-    //ws-bdimperio8.payformance.com
-    //ws-bdimperio8.payspan.com 
-    //NO BORRAR
-    //Offline.options = {checks: {xhr: {url: 'https://www.bar.other/resources/public-data/'}}};
-    //NO BORRAR
-
-    var run = function(){
+    /*var run = function(){
       Offline.check();
     }
-    setInterval(run, 2000); //Para saber si seguimos en linea tenemos que checar cada 3 segundos
+    setInterval(run, 2000); //Para saber si seguimos en linea tenemos que checar cada 3 segundos*/
 
 
 }); //fin document-ready

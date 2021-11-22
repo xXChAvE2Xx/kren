@@ -28,4 +28,3 @@ finally:
 	cursor.execute(agregarStatus, datosStatusOff)
 	con.commit()
 	con.close()
-	#GPIO.cleanup()

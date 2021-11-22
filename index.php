@@ -21,10 +21,10 @@
 
   <link href="lib/fontawesome/css/all.min.css" rel="stylesheet"><!--Fontawesome css-->
   <script href="lib/fontawesome/js/all.min.js" type="text/javascript"></script><!--Fontawesome js h-->
-<!--Offline lib-->
+<!--Offline lib
   <link rel="stylesheet" href="lib/offline/tema/offline-theme-slide-indicator.css"/></link>
   <link rel="stylesheet" href="lib/offline/lenguaje/offline-language-spanish-indicator.css"/></link>
-<!-- Fin Offline lib-->
+Fin Offline lib-->
   <link rel="stylesheet" href="css/animate.min.css"/><!--Animate.css-->
 
   <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet"></link><!--Bootstrapp css-->
@@ -202,7 +202,7 @@
                   <span id="cantidad-usuarios-span">Numero de telefono</span>
                   <input  class="input-group-text input is-primary" type="number"  name="telefono" placeholder="+52 312-000-000-000">
                 </section>
-                <button type="button" class="btn btn-warning button-vincular" name="rfid" id="VincularRFID"><p id="msjRfid"><i id="iconoRFID" class="far fa-id-card"></i>Vincular tarjeta RFID<p><p id="esperaTag">Pase tag por el lector&nbsp;<i><img id="imgEspera" src="img/loading.gif"></i><p></button><br>
+                <button type="button" class="btn btn-warning button-vincular" name="rfid" id="VincularRFID"><p id="msjRfid"><i id="iconoRFID" class="far fa-id-card"></i>Vincular tarjeta RFID</p><p id="msjActuRFID" style="display: none;"><i id="iconoRFID" class="far fa-id-card"></i>Actualizar tarjeta RFID</p><p id="esperaTag">Pase tag por el lector&nbsp;<i><img id="imgEspera" src="img/loading.gif"></i></p></button><br>
                 <span>Domicilio del empleado</span><br>
                 <input class="input-group-text input is-primary" maxlength="100" placeholder="Colima, Cuauhtemoc Emiliano Zapata #222" name="domicilio"><br>
                 <button type="button" class="btn btn-primary agregar_empleado"  value=""><i class="far fa-plus-square"></i> Agregar</button><button type="button" class="btn btn-primary guardar_cambios_empleado"  value="" ><i class="fas fa-save"></i> Guardar</button><button type="button" class="btn btn-warning cerrar-formulario" value=""><i class='fas fa-window-close'></i> Cerrar</button>
@@ -232,10 +232,7 @@
           <thead>
               <tr>
                   <th>Empleado</th>
-                  <th>Area</th>
-                  <th>Entrada</th>
-                  <th>Salida</th>
-                  <th>Constancias</th>
+                  <th>Acciones</th>
               </tr>
           </thead>
           <tbody>
@@ -291,7 +288,7 @@
       <span id="cantidad-usuarios-span">Numero de telefono</span><br>
       <input  class="input-group-text input is-rounded is-primary" type="number"  name="telefono_movile" placeholder="+52 312-000-000-000">
      
-      <button type="button" class="btn btn_warning_own button-vincular-movile" name="rfid" id="VincularRFID_movile"><p id="msjRfid"><i id="iconoRFID" class="far fa-id-card"></i>Vincular tarjeta RFID<p><p id="esperaTag">Pase tag por el lector&nbsp;<i><img id="imgEspera" src="img/loading.gif"></i><p></button><br>
+      <button type="button" class="btn btn_warning_own button-vincular-movile" name="rfid" id="VincularRFID_movile"><p id="msjRfidMovil"><i id="iconoRFID" class="far fa-id-card"></i>Vincular tarjeta RFID<p><p id="msjActuRFIDmovil" style="display: none;"><i id="iconoRFID" class="far fa-id-card"></i>Actualizar tarjeta RFID<p><p id="esperaTagMovil" style="display: none;">Pase tag por el lector&nbsp;<i><img id="imgEspera" src="img/loading.gif"></i><p></button><br>
       <span>Domicilio del empleado</span><br>
       <input class="input-group-text input is-rounded is-primary" maxlength="100" placeholder="Colima, Cuauhtemoc Emiliano Zapata #222" name="domicilio_movile"><br>
       <button type="button" class="btn btn_primary_own agregar_empleado_movile"  value=""><i class="far fa-plus-square"></i> Agregar</button><button type="button" class="btn btn_primary_own guardar_cambios_empleado_movile"  value="" ><i class="fas fa-save"></i> Guardar</button><button type="button" class="btn btn_warning_own cerrar-formulario-movile" value=""><i class='fas fa-window-close'></i> Cerrar</button>
@@ -435,7 +432,7 @@
               </div>
             </div>
             <div class="content botones-modales">
-              <button class="button is-primary is-outlined"><i class="fas fa-download"></i>&nbsp;Descargar Constancia</button>
+              <button id="ConstanciaDownload" class="button is-primary is-outlined"><i class="fas fa-download"></i>&nbsp;Descargar Constancia</button>
               <button class="button is-warning  cerrar_modal">Cerrar</button>
               <br>
             </div>

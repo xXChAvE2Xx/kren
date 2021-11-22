@@ -83,15 +83,39 @@
 
 			$id_curso = $_POST['id_curso'];
 			$sql = "SELECT descripcion, fecha_hora_inicio, fecha_hora_fin, siguiente FROM Cursos WHERE id_curso = ".$id_curso.";";
-			$result = $conn->query($sql);	
+			$result = $conn->query($sql);
+			$newFin = "";	
+		 	$newInicio = "";
 
 			if ($result->num_rows > 0)
 			{
 				while($row = $result->fetch_assoc())
 				{
 					$datos_curso[1] = $row["descripcion"];
-					$datos_curso[2] = $row["fecha_hora_inicio"];
-					$datos_curso[3] = $row["fecha_hora_fin"];
+
+					//Validamos que ya se haya aplicado, para poder realizar la conversion de la fecha
+					if ($row["fecha_hora_inicio"] != null && $row["fecha_hora_fin"] != null) {
+						$inicio = $row["fecha_hora_inicio"]; 
+				        $fin = $row["fecha_hora_fin"];
+
+				        //Convierte la fecha y el tiempo en segundos
+				        $segInicio = strtotime($inicio);  
+				        $segFin = strtotime($fin); 
+
+				        //Conversion a un formato en especifico D/M/AAAA y H:S:MS
+				        $newInicio = date("d/m/Y H:i", $segInicio);
+				        $newFin = date("d/m/Y H:i", $segFin);  
+
+				        //Juntamos los segundos con el tiempo 
+				        $newInicio = $newInicio.":00";
+				        $newFin = $newFin.":00"; 
+					}else{
+						$newFin = $row["fecha_hora_fin"];
+						$newInicio = $row["fecha_hora_inicio"];
+					}
+
+					$datos_curso[2] = $newInicio;
+					$datos_curso[3] = $newFin;
 					$datos_curso[4] = $row["siguiente"];
 				}
 			} 
@@ -212,11 +236,24 @@
 
 		    $result = $conn->query($sql);
 
+		    $newEntrada  = "";
+
 			if ($result->num_rows > 0)
 			{
 				while($row = $result->fetch_array(MYSQLI_BOTH))
 				{
-					echo '<p>'.$row["entrada"].' '.$row["nombre_empleado"].' Entro al curso: '.$row["nombre_curso"].'</p>';
+					$entrada = $row['entrada']; 
+
+			        //Convierte la fecha y el tiempo en segundos
+			        $segEntrada = strtotime($entrada);  
+
+			        //Conversion a un formato en especifico D/M/AAAA y H:S:MS
+			        $newEntrada = date("d/m/Y H:i", $segEntrada); 
+
+			        //Juntamos los segundos con el tiempo 
+			        $newEntrada = $newEntrada.":00";
+
+			        echo '<p>'.$newEntrada.' '.$row["nombre_empleado"].' entro al curso: '.$row["nombre_curso"].'</p>';
 				}
 			} 
 			else 
@@ -225,7 +262,7 @@
 			}
 
 		break;
-		
+
 		case 'comprobar_correo':
 			$correo = $_POST['correo'];
 			$sql = "SELECT id_administrador FROM Administrador WHERE correo='$correo';";
@@ -314,16 +351,33 @@
 			
 			$i=0;
 			$asistencias[]=0;
-			
+
 			$sql = "SELECT entrada, salida FROM RFID WHERE id_empleado ='$id_empleado' AND id_curso = '$id_curso';";
 			
-			$result = $conn->query($sql);	
+			$result = $conn->query($sql);
+
 			if ($result->num_rows > 0)
 			{
 				while($row = $result->fetch_assoc())
-				{
-					$asistencias[$i]   = $row['entrada'];
-					$asistencias[$i+1] = $row['salida'];
+				{  
+			        $entrada = $row['entrada']; 
+			        $salida = $row['salida'];
+
+			        //Convierte la fecha y el tiempo en segundos
+			        $segEntrada = strtotime($entrada);  
+			        $segSalida = strtotime($salida); 
+
+			        //Conversion a un formato en especifico D/M/AAAA y H:S:MS
+			        $newEntrada = date("d/m/Y H:i", $segEntrada);
+			        $newSalida = date("d/m/Y H:i", $segSalida);  
+
+			        //Juntamos los segundos con el tiempo 
+			        $newEntrada = $newEntrada.":00";
+			        $newSalida = $newSalida.":00"; 
+   					
+   					//Mandamos nuevo formato de la fecha
+					$asistencias[$i]   = $newEntrada;
+					$asistencias[$i+1] = $newSalida;
 					$i=$i+2;
 				}
 
